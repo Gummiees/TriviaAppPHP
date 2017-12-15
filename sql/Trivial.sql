@@ -80,4 +80,19 @@ INSERT INTO questions_answers(id_qa,Description,Value,id_b, id_quiz) VALUES
 (25,"¿En que juego sale la 'Ciudad de Balamb'?",null,null,1),
 (26,"Final Fantasy VII.",0,25,1),
 (27,"Dragon Quest IV.",0,25,1),
-(28,"Final Fantasy VII.",1,25,1)
+(28,"Final Fantasy VII.",1,25,1),
+-- 8
+(25,"¿Cuales son los tres Pokemons iniciales en la segunda generación?",null,null,1),
+(26,"Chikorita, Charmander y Totodile.",0,25,1),
+(27,"Chikorita, Cyndaquil y Totodile.",1,25,1),
+(28,"Chikorita, Cyndaquil y Squirtle.",0,25,1),
+-- 9
+(25,"¿Cuál es el nivel más alto en Rocket League",null,null,1),
+(26,"Señor de los cohetes.",1,25,1),
+(27,"Rey de los cohetes.",0,25,1),
+(28,"El dios supremo de los cohetes.",1,25,1),
+-- 10
+(25,"¿En que año salio Counter Striker?",null,null,1),
+(26,"1999.",1,25,1),
+(27,"2000.",0,25,1),
+(28,"2004.",0,25,1)
