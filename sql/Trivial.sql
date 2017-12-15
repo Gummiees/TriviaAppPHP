@@ -1,89 +1,83 @@
 -- Create database
-CREATE DATABASE Trivial
-GO
+CREATE DATABASE Trivial;
+
+-- Create table 
+
+-- Create table Quiz
+CREATE TABLE quizzes
+(
+	id_quiz MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	title VARCHAR(25) NOT NULL,
+	description VARCHAR(60) NOT NULL,
+	theme VARCHAR(25) NOT NULL
+);
+
 -- Create table Questions and Answers
 CREATE TABLE questions_answers
 (
 	id_qa MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Description VARCHAR(60) NOT NULL,
-	Value BIT NULL,
-	id_b INT NULL
-)
-GO
--- Create table Quiz
-CREATE TABLE quiz
-(
-	id_quiz MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	title VARCHAR(25) NOT NULL,
-	Description VARCHAR(60) NOT NULL,
-	Theme VARCHAR(25) NOT NULL
-)
-GO
--- Create table 
+	description VARCHAR(60) NOT NULL,
+	value BIT NULL,
+	id_b MEDIUMINT UNSIGNED NULL,
+	id_quiz MEDIUMINT UNSIGNED NOT NULL,
+	CONSTRAINT FK_father FOREIGN KEY (id_b) REFERENCES questions_answers(id_qa),
+	CONSTRAINT FK_quiz FOREIGN KEY (id_quiz) REFERENCES quizzes(id_quiz)
+);
 
 -- Create table Users
 CREATE TABLE users
 (
 	id_user MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	Nick VARCHAR(20) NOT NULL,
-	Pass CHAR(40) NOT NULL,
-	Email VARCHAR(60) NOT NULL
-)
-GO
---
-CONSTRAINT PK_Id PRIMARY KEY (Id_qa),
-CONSTRAINT FK_father FOREIGN KEY (id_b) REFERENCES questions_answers)
+	nick VARCHAR(20) NOT NULL,
+	pass CHAR(40) NOT NULL,
+	email VARCHAR(60) NOT NULL
+);
+
+-- Inserts
+
 -- Users
- INSERT INTO users (Nick,Pass,Email) VALUES ("root","root","root@trivial.com")
+
+ INSERT INTO users (nick,pass,email) VALUES ("root","root","root@trivial.com");
+
+-- Quizzes
+
+ INSERT INTO quizzes (title,description,theme) VALUES ("Quiz de videojuegos","Este quiz tiene varias preguntas sobre videojuegos de todos los géneros. ¿Te atreves?","Videojuegos");
+
 -- Questions
 -- Videogames
 -- 1
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (1,"¿Cuál de estos videojuegos salio primero en el mercado?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (2,"Tetris.",0,1)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (3,"Pong.",0,1)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (4,"Nought and Crosses.",1,1)
+INSERT INTO questions_answers(id_qa,Description,Value,id_b, id_quiz) VALUES 
+(1,"¿Cuál de estos videojuegos salio primero en el mercado?",null,null,1),
+(2,"Tetris.",0,1,1),
+(3,"Pong.",0,1,1),
+(4,"Nought and Crosses.",1,1,1),
 -- 2
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (5,"¿Que relación tienen Mario y Wario?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (6,"Son amigos.",1,5)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (7,"Pareja de hecho.",0,5)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (8,"Enemigos.",0,5)
+(5,"¿Que relación tienen Mario y Wario?",null,null,1),
+(6,"Son amigos.",1,5,1),
+(7,"Pareja de hecho.",0,5,1),
+(8,"Enemigos.",0,5,1),
 -- 3
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (9,"¿Cuál de estas peliculas no se ha convertido en un videojuego?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (10,"Matrix.",null,9)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (11,"Easy Rider.",null,9)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (12,"Star Wars: La Amenaza Fantasma.",null,9)
+(9,"¿Cuál de estas peliculas no se ha convertido en un videojuego?",null,null,1),
+(10,"Matrix.",0,9,1),
+(11,"Easy Rider.",1,9,1),
+(12,"Star Wars: La Amenaza Fantasma.",0,9,1),
 -- 4
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (13,"¿Que empresa desarollo el juego "Crash Bandicoot" para PSOne ?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (14,"Bandai.",0,13)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (15,"Square Enix.",0,13)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (16,"Naughty Dog.",1,13)
+(13,"¿Que empresa desarollo el juego 'Crash Bandicoot' para PSOne ?",null,null,1),
+(14,"Bandai.",0,13,1),
+(15,"Square Enix.",0,13,1),
+(16,"Naughty Dog.",1,13,1),
 -- 5
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (17,"¿Cuál es la compañia que creo Steam?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (18,"Sony.",0,17)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (19,"Valve.",1,17)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (20,"Blitzzard.",0,17)
+(17,"¿Cuál es la compañia que creo Steam?",null,null,1),
+(18,"Sony.",0,17,1),
+(19,"Valve.",1,17,1),
+(20,"Blitzzard.",0,17,1),
 -- 6
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (21,"¿En cual juego sale el personaje "Phara"?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (22,"League Of Legends.",0,21)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (23,"League Of Angels",0,21)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (24,"Overwatch.",1,21)
+(21,"¿En cual juego sale el personaje 'Phara'?",null,null,1),
+(22,"League Of Legends.",0,21,1),
+(23,"League Of Angels",0,21,1),
+(24,"Overwatch.",1,21,1),
 -- 7
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (25,"¿En que juego sale la "Ciudad de Balamb"?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (26,"Final Fantasy VII.",0,25)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (27,"Dragon Quest IV.",0,25)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (28,"Final Fantasy VII.",1,25)
--- 8
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (29,"¿Cuál de estas peliculas no se ha convertido en un videojuego?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (30,"Matrix.",null,29)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (31,"Easy Rider.",null,29)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (32,"Star Wars: La Amenaza Fantasma.",null,29)
--- 9
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (33,"¿Cuál de estas peliculas no se ha convertido en un videojuego?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (34,"Matrix.",null,33)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (35,"Easy Rider.",null,33)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (36,"Star Wars: La Amenaza Fantasma.",null,33)
--- 10
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (37,"¿Cuál de estas peliculas no se ha convertido en un videojuego?",null,null)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (38,"Matrix.",null,37)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (39,"Easy Rider.",null,37)
-INSERT INTO questions_answers(id_qa,Description,Value,id_b) VALUES (40,"Star Wars: La Amenaza Fantasma.",null,37)
+(25,"¿En que juego sale la 'Ciudad de Balamb'?",null,null,1),
+(26,"Final Fantasy VII.",0,25,1),
+(27,"Dragon Quest IV.",0,25,1),
+(28,"Final Fantasy VII.",1,25,1)
