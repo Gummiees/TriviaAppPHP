@@ -10,6 +10,15 @@ CREATE TABLE questions_answers
 	id_b INT NULL
 )
 GO
+-- Create table Quiz
+CREATE TABLE quiz
+(
+	id_quiz MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	title VARCHAR(25) NOT NULL,
+	Description VARCHAR(60) NOT NULL,
+	Theme VARCHAR(25) NOT NULL
+)
+GO
 -- Create table 
 
 -- Create table Users
