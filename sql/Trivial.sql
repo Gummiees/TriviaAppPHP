@@ -82,17 +82,17 @@ INSERT INTO questions_answers(id_qa,Description,Value,id_b, id_quiz) VALUES
 (27,"Dragon Quest IV.",0,25,1),
 (28,"Final Fantasy VII.",1,25,1),
 -- 8
-(25,"¿Cuales son los tres Pokemons iniciales en la segunda generación?",null,null,1),
-(26,"Chikorita, Charmander y Totodile.",0,25,1),
-(27,"Chikorita, Cyndaquil y Totodile.",1,25,1),
-(28,"Chikorita, Cyndaquil y Squirtle.",0,25,1),
+(29,"¿Cuales son los tres Pokemons iniciales en la segunda generación?",null,null,1),
+(30,"Chikorita, Charmander y Totodile.",0,29,1),
+(31,"Chikorita, Cyndaquil y Totodile.",1,29,1),
+(32,"Chikorita, Cyndaquil y Squirtle.",0,29,1),
 -- 9
-(25,"¿Cuál es el nivel más alto en Rocket League",null,null,1),
-(26,"Señor de los cohetes.",1,25,1),
-(27,"Rey de los cohetes.",0,25,1),
-(28,"El dios supremo de los cohetes.",1,25,1),
+(33,"¿Cuál es el nivel más alto en Rocket League",null,null,1),
+(34,"Señor de los cohetes.",1,33,1),
+(35,"Rey de los cohetes.",0,33,1),
+(36,"El dios supremo de los cohetes.",1,33,1),
 -- 10
-(25,"¿En que año salio Counter Striker?",null,null,1),
-(26,"1999.",1,25,1),
-(27,"2000.",0,25,1),
-(28,"2004.",0,25,1)
+(37,"¿En que año salio Counter Striker?",null,null,1),
+(38,"1999.",1,37,1),
+(39,"2000.",0,37,1),
+(40,"2004.",0,37,1)
