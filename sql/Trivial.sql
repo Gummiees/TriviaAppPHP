@@ -53,13 +53,13 @@ INSERT INTO questions(id_question, description, id_quiz) VALUES
 (1, "¿Cuál de estos videojuegos salio primero en el mercado?", 1),
 (2, "¿Que relación tienen Mario y Wario?", 1),
 (3, "¿Cuál de estas peliculas no se ha convertido en un videojuego?", 1),
-(4, "¿Que empresa desarollo el juego 'Crash Bandicoot' para PSOne ?", 1),
+(4, "¿Que empresa desarollo el juego 'Crash Bandicoot' para PSOne?", 1),
 (5, "¿Cuál es la compañia que creo Steam?", 1),
 (6, "¿En cual juego sale el personaje 'Phara'?", 1),
 (7, "¿En que juego sale la 'Ciudad de Balamb'?", 1),
 (8, "¿Cuales son los tres Pokemons iniciales en la segunda generación?", 1),
-(9, "¿Cuál es el nivel más alto en Rocket League", 1),
-(10, "¿En que año salio Counter Striker?", 1),
+(9, "¿Cuál es el nivel más alto en Rocket League?", 1),
+(10, "¿En que año salio Counter Strike?", 1),
 (11,"Smile, Sweet, Sister, Sadistic, Suprise, ...",2),
 (12,"Somebody ...",2),
 (13,"|, |l, ||, |_",2),
@@ -67,7 +67,7 @@ INSERT INTO questions(id_question, description, id_quiz) VALUES
 (15,"Take off your jacket",2),
 (16,"Sayori",2),
 (17,"When I say go, be ready to throw... Go!",2),
-(18,"I'll have two number 9s ...",2);
+(18,"I'll have two number 9s, ...",2);
 
 INSERT INTO answers(id_answer, description, value, id_question) VALUES
 (1, "Tetris.",0,1),
@@ -121,6 +121,6 @@ INSERT INTO answers(id_answer, description, value, id_question) VALUES
 (49,"Okay, now let's punch it.",0,17),
 (50,"Just follow my moves, and sneak around.",0,17),
 (51,"Thorw it on him not me! Uhg, let's try something else.",1,17),
-(52,", a number 9 large, a number 2 with extra dip, a number 3, two number 45s, one with cheese, and a large soda.",0,18),
-(53,", a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda.",1,18),
-(54,", a number 9 large, a number 4 with extra dip, a number 5, two number 45s, one with cheese, and a large soda.",0,18);
+(52,"a number 9 large, a number 2 with extra dip, a number 3, two number 45s, one with cheese, and a large soda.",0,18),
+(53,"a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda.",1,18),
+(54,"a number 9 large, a number 4 with extra dip, a number 5, two number 45s, one with cheese, and a large soda.",0,18);
