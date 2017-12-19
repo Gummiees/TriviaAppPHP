@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php session_start(); ?>
 <html lang="en">
 <head>
   <title>Header</title>
@@ -39,12 +39,17 @@
             </ul>
             
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="login.php">Login</a>
+                <?php if (isset($_SESSION["nick"])){
+
+
+                ?><li class="nav-item">
+                    <a class="nav-link" href="login.php"><?php  echo $_SESSION["nick"]; ?></a>
                 </li>
                 <li class="navbar-item">
-                    <a class="nav-link" href="register.php">Register</a>
-                </li>
+                    <a class="nav-link" href="register.php"><?php echo "logout"; ?></a>
+                </li><?php }else{
+
+              }?> 
             </ul>
         </div>  
     </nav>

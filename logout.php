@@ -2,7 +2,9 @@
 // This page lets the user logout.
 // This version uses sessions.
 
-session_start(); // Access the existing session.
+// Set the page title and include the HTML header:
+$page_title = 'Logged Out!';
+include ('includes/header.html');
 
 // If no session variable exists, redirect the user:
 if (!isset($_SESSION['user_id'])) {
@@ -19,9 +21,6 @@ if (!isset($_SESSION['user_id'])) {
 
 }
 
-// Set the page title and include the HTML header:
-$page_title = 'Logged Out!';
-include ('includes/header.html');
 
 // Print a customized message:
 echo "<h1>Logged Out!</h1>

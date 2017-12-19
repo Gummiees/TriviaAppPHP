@@ -41,7 +41,7 @@ CREATE TABLE users
 -- Inserts
 
 -- Users
-INSERT INTO users (nick,pass,email) VALUES ("root","root","root@trivial.com");
+INSERT INTO users (nick,pass,email) VALUES ("root","dc76e9f0c0006e8f919e0c515c66dbba3982f785","root@trivial.com");
 -- Quizzes
 INSERT INTO quizzes (id_quiz, title, description, theme) VALUES
 (1, "Quiz de videojuegos","Este quiz tiene varias preguntas sobre videojuegos de todos los géneros. ¿Te atreves?","Videojuegos"),
