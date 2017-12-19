@@ -18,8 +18,8 @@ if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
 ?>
 <div class="row">
 	<div class="jumbotron text-center col-10 offset-1">
-	  <h1 style="font-size: 4em;"><?php echo $quiz_title;?></h1> 
-	  <p style="font-size: 1.5em;"><?php echo $quiz_desc;?></p>
+	  <h1><?php echo $quiz_title;?></h1> 
+	  <p><?php echo $quiz_desc;?></p>
 	</div>
 </div>
 <hr>
