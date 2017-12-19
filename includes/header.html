@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="includes/main.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
@@ -30,18 +31,12 @@
         <!-- el menu o menu que se desplega-->
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
-                <li class="nav-item active">
+                <li class="nav-item" id="nav-index">
                     <a class="nav-link" href="index.php">Home</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="nav-quiz">
                     <a class="nav-link" href="#">Link</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>    
             </ul>
             
             <ul class="navbar-nav ml-auto">
@@ -55,6 +50,16 @@
         </div>  
     </nav>
   
+  <script>
+    var local = window.location.pathname;
+    local = local.substring(local.lastIndexOf("/") + 1);
+    switch(local) {
+      case 'index.php':
+        document.getElementById('nav-index').className += ' active';
+      case 'quiz.php':
+        document.getElementById('nav-quiz').className += ' active'; 
+    }
+  </script>
 
 	<div id="content"><!-- Start of the page-specific content. -->
 <!-- Script 9.1 - header.html -->
