@@ -1,4 +1,16 @@
+#footer {
+	text-align: center;
+}
+
 .form-quiz {
 	margin-left: 20px;
+}
+
+.jumbotron h1 {
+	font-size: 4em;
+}
+
+.jumbotron p {
+	font-size: 1.5em;
 }
 
