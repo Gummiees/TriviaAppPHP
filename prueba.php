@@ -86,7 +86,7 @@ if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
           console.log(element);
         });
         var JSONrespuestas = JSON.stringify(respuestas);
-        $.post("includes/results.php?qid=<?php echo $qid;?>",{ respuestas:JSONrespuestas});
+        $.post("includes/results.php",{ respuestas:JSONrespuestas});
       }
     } else {
       alert('You must check one first.');
