@@ -4,7 +4,6 @@ include("includes/header.html");
 include('includes/print_messages.php');
 
 //comprobar que está logueado
-
 if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
 	$qid = $_GET['qid'];
 	$q = "SELECT title, description FROM quizzes WHERE id_quiz=$qid";
