@@ -38,10 +38,28 @@ CREATE TABLE users
 	email VARCHAR(60) NOT NULL UNIQUE KEY
 );
 
+CREATE TABLE stadistics_user (
+	id_stad_usr MEDIUMINT(8) UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    id_quiz MEDIUMINT(8) UNSIGNED NOT NULL,
+    average DECIMAL(5,4) UNSIGNED NOT NULL,
+    date DATETIME NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_id_quiz FOREIGN KEY (id_quiz) REFERENCES quizzes(id_quiz) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE stadistics_quiz (
+	id_stad_quiz MEDIUMINT(8) UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    id_user MEDIUMINT(8) UNSIGNED NOT NULL,
+    average DECIMAL(5,4) UNSIGNED NOT NULL,
+    date DATETIME NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_id_user FOREIGN KEY (id_user) REFERENCES users(id_user) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 -- Inserts
 
 -- Users
-INSERT INTO users (nick,pass,email) VALUES ("root","root","root@trivial.com");
+INSERT INTO users (nick,pass,email) VALUES
+("root",SHA1("root"),"root@trivial.com"),
+("test",SHA1("test"),"test@test.com");
 -- Quizzes
 INSERT INTO quizzes (id_quiz, title, description, theme) VALUES
 (1, "Videogames quiz","This quiz has different questions about videogames of all types of genres. Are you ready for the challenge?","Videogames"),

@@ -1,14 +1,18 @@
 <?php
 include("includes/header.html");
 include('includes/print_messages.php');
+// check if it is logged in
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST['respuestas'])) {
 	require ('mysqli_connect.php');
+
 	$res_usr = $_POST['respuestas'];
 	$res_usr = preg_split("/¬+/", $res_usr);
 	$radio = 'radio'.(count($res_usr));
 	$res_usr[] = $_POST[$radio];
 
 	$qid = $_GET['qid'];
+	$uid = $_SESSION['id_user'];
 
 	$q = "SELECT title FROM quizzes WHERE id_quiz=$qid";
   $r = @mysqli_query ($dbc, $q);
@@ -32,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST[
 		$questions[$row['id_question']] = $row['description'];
 	}
 
-	$cont = 0;
+	$incorrectas = 0;
 	$preg = 0;
 	foreach ($questions as $key => $question) {
 ?>
@@ -51,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST[
 	foreach ($answers as $answer => $value) {
 		if (0 == $value && $res_usr[$preg] == $answer) {
 		 echo '<div class="row respuesta-incorrecta"><div class="col-1 text-center"><i class="fa fa-times" aria-hidden="true"></i></div>';
+		 $incorrectas++;
 		} else if (1 == $value) {
 			echo '<div class="row respuesta-correcta"><div class="col-1 text-center"><i class="fa fa-check" aria-hidden="true"></i></div>';
 		} else {
@@ -59,12 +64,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST[
 ?>
 				<div class="col-11 text-left respuesta"><?php echo $answer;?></div>
 			</div>
-			<?php $cont++;} ?>
 	</div>
 </div>
 
 <?php
-	$preg++;}
+			$preg++;
+		}
+	}
+	$media = $incorrectas/count($questions); // entre 0 y 1
+	$q = "INSERT INTO stadistics_user (id_quiz, average) VALUES ($qid, $media)";
+	$r = @mysqli_query ($dbc, $q);
+	if (mysqli_num_rows($r) != 1) echo print_message('danger', 'There was an error due to our system.');
+	$q = "INSERT INTO stadistics_quiz (id_user, average) VALUES ($uid, $media)";
+	$r = @mysqli_query ($dbc, $q);
+	if (mysqli_num_rows($r) != 1) echo print_message('danger', 'There was an error due to our system.');
 } else echo print_message('danger', 'You cannot access results unless you finished a quiz.');
 include("includes/footer.html");
 ?>
