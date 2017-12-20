@@ -20,10 +20,11 @@ if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
   </div>
 </div>
 <hr>
-<div class="form-quiz" style="margin-left: 20px;">
-  <!--<form action="quiz.php" method="POST">-->
+<div class="row">
+  <div class="col-8 offset-2 text-center">
+    <form action="results.php?qid=<?php echo $qid;?>" method="POST">
 
-    <div id="print-here"></div>
+      <div id="print-here"></div>
 
 <script>
   <?php
@@ -62,10 +63,14 @@ if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
   }
 
   function generateQuestion() {
-    document.getElementById('print-here').innerHTML = '<div id="pregunta'+actual+'"><fieldset id="fieldset'+actual+'" class="form-group"></fieldset><button class="btn btn-primary" onclick="nextQuestion()">Next</button></div></div>';
+    if (actual === preguntas.length - 1) {
+      document.getElementById('print-here').innerHTML = '<div id="pregunta'+actual+'"><fieldset id="fieldset'+actual+'" class="form-group"></fieldset><button type="submit" class="btn btn-primary" onclick="nextQuestion()">Finish</button></div></form></div>';
+    } else {
+      document.getElementById('print-here').innerHTML = '<div id="pregunta'+actual+'"><fieldset id="fieldset'+actual+'" class="form-group"></fieldset><button type="button" class="btn btn-primary" onclick="nextQuestion()">Next</button></div></form></div></div>';
+    }
     preguntas[actual].forEach((respuesta, j) => {
       if (j===0) document.getElementById('fieldset'+actual).innerHTML += "<legend>"+respuesta+"</legend>";
-      else document.getElementById('fieldset'+actual).innerHTML += "<div class='form-check disabled'><label class='custom-control custom-radio'><input value='"+respuesta+"' id='radio"+j+"' name='radio"+actual+"' type='radio' class='custom-control-input'><span class='custom-control-indicator'></span><span class='custom-control-description'>"+respuesta+"</span></label></div>";
+      else document.getElementById('fieldset'+actual).innerHTML += "<div class='form-check disabled text-left offset-4'><label class='custom-control custom-radio'><input value='"+respuesta+"' id='radio"+j+"' name='radio"+actual+"' type='radio' class='custom-control-input'><span class='custom-control-indicator'></span><span class='custom-control-description'>"+respuesta+"</span></label></div>";
     });
   }
 
@@ -81,12 +86,9 @@ if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
         generateQuestion();
         document.getElementById('pregunta'+actual).style.clear = 'both';
         document.getElementById('pregunta'+actual).style.display = 'block';
-        } else {
-        respuestas.forEach((element, index) => {
-          console.log(element);
-        });
-        var JSONrespuestas = JSON.stringify(respuestas);
-        $.post("includes/results.php?qid=<?php echo $qid;?>",{ respuestas:JSONrespuestas});
+        if (actual === preguntas.length - 1) {
+          document.getElementById('fieldset'+actual).innerHTML += "<input type='hidden' value='"+respuestas.join('¬')+"' name='respuestas'/>";
+        }
       }
     } else {
       alert('You must check one first.');
