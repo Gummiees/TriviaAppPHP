@@ -14,3 +14,17 @@
 	font-size: 1.5em;
 }
 
+.footer-icon {
+	color: #adadad;
+	font-size: 2em;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.footer-icon:hover {
+	color: #000;
+	-webkit-transition: color 500ms ease-out;
+  -moz-transition: color 500ms ease-out;
+  -o-transition: color 500ms ease-out;
+  transition: color 500ms ease-out;
+}
