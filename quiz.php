@@ -25,7 +25,6 @@ if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
     <form action="results.php?qid=<?php echo $qid;?>" method="POST">
 
       <div id="print-here"></div>
-
 <script>
   <?php
     $q = "SELECT id_question, description FROM questions WHERE id_quiz=$qid";
@@ -64,9 +63,9 @@ if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
 
   function generateQuestion() {
     if (actual === preguntas.length - 1) {
-      document.getElementById('print-here').innerHTML = '<div id="pregunta'+actual+'"><fieldset id="fieldset'+actual+'" class="form-group"></fieldset><button type="submit" class="btn btn-primary" onclick="nextQuestion()">Finish</button></div></form></div>';
+      document.getElementById('print-here').innerHTML = '<div id="pregunta'+actual+'"><fieldset id="fieldset'+actual+'" class="form-group"></fieldset><div class="row"><button type="submit" class="btn btn-primary btn-lg btn-block" onclick="nextQuestion()">Finish</button></div></div></form></div>';
     } else {
-      document.getElementById('print-here').innerHTML = '<div id="pregunta'+actual+'"><fieldset id="fieldset'+actual+'" class="form-group"></fieldset><button type="button" class="btn btn-primary" onclick="nextQuestion()">Next</button></div></form></div></div>';
+      document.getElementById('print-here').innerHTML = '<div id="pregunta'+actual+'"><fieldset id="fieldset'+actual+'" class="form-group"></fieldset><div class="row"><button type="button" class="btn btn-primary btn-lg btn-block" onclick="nextQuestion()">Next</button></div></div></form></div>';
     }
     preguntas[actual].forEach((respuesta, j) => {
       if (j===0) document.getElementById('fieldset'+actual).innerHTML += "<legend>"+respuesta+"</legend>";
@@ -95,6 +94,7 @@ if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
     }
   }
 </script>
+</div>
 <?php
   } else echo print_message('danger', 'Quiz not found on our database.');
   mysqli_free_result ($r);

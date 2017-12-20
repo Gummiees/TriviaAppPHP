@@ -5,7 +5,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST[
 	require ('mysqli_connect.php');
 	$res_usr = $_POST['respuestas'];
 	$res_usr = preg_split("/¬+/", $res_usr);
-	$res_usr[] = $_POST['radio9'];
+	$radio = 'radio'.(count($res_usr));
+	$res_usr[] = $_POST[$radio];
 
 	$qid = $_GET['qid'];
 
@@ -40,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST[
 	<div class="col-6 offset-3 respuestas">
 			<h3><?php echo $question;?></h3>
 <?php
-	$answers = '';
+	unset($answers);
 	$q = "SELECT A.description, A.value FROM answers AS A INNER JOIN questions AS Q
 	ON Q.id_question = A.id_question WHERE Q.id_question=$key";
 	$r = @mysqli_query ($dbc, $q);
@@ -49,11 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST[
 	}
 	foreach ($answers as $answer => $value) {
 		if (0 == $value && $res_usr[$preg] == $answer) {
-		 echo '<div class="row respuesta-incorrecta"><div class="col-1 text-right"><i class="fa fa-times" aria-hidden="true"></i></div>';
+		 echo '<div class="row respuesta-incorrecta"><div class="col-1 text-center"><i class="fa fa-times" aria-hidden="true"></i></div>';
 		} else if (1 == $value) {
-			echo '<div class="row respuesta-correcta"><div class="col-1 text-right"><i class="fa fa-check" aria-hidden="true"></i></div>';
+			echo '<div class="row respuesta-correcta"><div class="col-1 text-center"><i class="fa fa-check" aria-hidden="true"></i></div>';
 		} else {
-			echo '<div class="row"><div class="col-1 text-right"></div>';
+			echo '<div class="row"><div class="col-1 text-center"><i class="fa fa-circle-o" aria-hidden="true"></i></div>';
 		}
 ?>
 				<div class="col-11 text-left respuesta"><?php echo $answer;?></div>
