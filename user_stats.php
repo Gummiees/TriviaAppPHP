@@ -3,7 +3,33 @@ include("includes/header.html");
 include('includes/print_messages.php');
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 	require ('mysqli_connect.php');
-	
+	$uid = $_GET['uid'];
+	$user_stats = array('id_quizzes' => [], 'averages' => [], 'dates' => []);
+
+	$q = "SELECT id_quiz, average, date FROM statistics WHERE id_user=$uid";
+	$r = @mysqli_query ($dbc, $q);
+	$num = mysqli_num_rows($r);
+	if ($num > 0) {
+		while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+			$user_stats ['id_quizzes'] [] = $row['id_quiz'];
+			$user_stats ['averages'] [] = $row['average'];
+			$user_stats ['dates'] [] = $row['date'];
+		}
+
+		$last_id=-1;
+		foreach ($user_stats['id_quizzes'] as $id_quiz) {
+			if ($last_id != $id_quiz) {
+				$q = "SELECT title date FROM quizzes WHERE id_quiz=$id_quiz";
+				var_dump($id_quiz);
+				$r = @mysqli_query ($dbc, $q);
+				if (mysqli_num_rows($r) > 0) {
+					while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+						$quiz_titles [] = $row['title'];
+					}
+				} else echo print_message('danger', 'No quiz found.');
+				$last_id = $id_quiz;
+			}
+		}
 ?>
 <script src="includes/utils.js"></script>
 <div style="width: 80%; margin-left: 10%;">
@@ -21,7 +47,14 @@ var color = Chart.helpers.color;
 var config1 = {
   type: 'radar',
   data: {
-    labels: ["Quiz 1", "Quiz 2", "Quiz 3", "Quiz 4", "Quiz 5"],
+    labels:<?php
+    	echo "['";
+    	foreach ($quiz_titles as $key => $quiz_title) {
+    		echo $quiz_title;
+    		if ($key != count($quiz_title)) echo ",";
+    	}
+    	echo "']";
+    ?>,
     datasets: [{
       label: "User",
       backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
@@ -163,6 +196,7 @@ window.onload = function() {
 </script>
 
 <?php
+		} else echo print_message('danger', 'The user does not have any stats.');
 	} else echo print_message('danger', 'No user selected.');
 include("includes/footer.html");
 ?>
