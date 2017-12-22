@@ -14,84 +14,77 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 		$row = mysqli_fetch_array($r, MYSQLI_ASSOC);
 		$nick = $row['nick'];
 
-		$user_stats = array('id_quizzes' => [], 'averages' => [], 'dates' => []);
+    $q = "SELECT title FROM quizzes";
+    $r = @mysqli_query ($dbc, $q);
+    while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+      $quiz_titles [] = $row['title'];
+    }
 
-		$q = "SELECT id_quiz, average, date FROM statistics WHERE id_user=$uid";
+    // calculate total average 
+
+    // for uid
+
+		$q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` WHERE id_user=$uid GROUP BY id_quiz";
 		$r = @mysqli_query ($dbc, $q);
 		$num = mysqli_num_rows($r);
 		if ($num > 0) {
 			while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-				$user_stats ['id_quizzes'] [] = intval($row['id_quiz']);
-				$user_stats ['averages'] [] = floatval($row['average']);
-				$user_stats ['dates'] [] = $row['date'];
+				$user_averages [] = round(floatval($row['total average']) * 100, 2);
 			}
 
-			$last_id=-1;
-			foreach ($user_stats['id_quizzes'] as $key => $id_quiz) {
-				if ($last_id != $id_quiz) {
-					$suma_avg[$id_quiz] = 0;
-					$total_times[$id_quiz] = 0;
-					$q = "SELECT title FROM quizzes WHERE id_quiz=$id_quiz";
-					$r = @mysqli_query ($dbc, $q);
-					if (mysqli_num_rows($r) > 0) {
-						while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-							$quiz_titles [] = $row['title'];
-						}
-					} else echo print_message('danger', 'No quiz found.');
-					$last_id = $id_quiz;
-				}
-				$suma_avg[$id_quiz] += $user_stats['averages'][$key];
-				$total_times[$id_quiz]++;
-			}
+      // for all users
 
-			foreach ($suma_avg as $key => $value) {
-				$suma_avg[$key] = round(($value/$total_times[$key])*100, 2);
-			}
+      $q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` GROUP BY id_quiz";
+      $r = @mysqli_query ($dbc, $q);
+      while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+        $all_averages [] = round(floatval($row['total average']) * 100, 2);
+      }
 
-			//semana pasada: strtotime('-1 week');
 			$oneweek = date('Y-m-d H:i:s', strtotime('-1 week -1 day'));
 			$yesterday = date('Y-m-d H:i:s', strtotime('-1 day'));
-			$q = "SELECT average, date FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') AND id_user=$uid ORDER BY date";
-			$r = @mysqli_query ($dbc, $q);
-			if (mysqli_num_rows($r) > 0) {
-				while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-					$averages [] = $row['average'];
-					$dates [] =  substr($row['date'], 0, 10);
-				}
+      //var_dump($oneweek);
+      //var_dump($yesterday);
 
-        $cont = 0;
-        $date_before = substr($oneweek, 0, 10);
-        $total_per_day = array();
-        $total_per_day [$cont] = 0;
-        foreach ($dates as $date) {
-          if ($date_before == $date) $total_per_day [$cont] ++;
-          else {
-            $date_before = $date;
-            $cont++;
-            $total_per_day [$cont] = 0;
+      $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') AND id_user=$uid GROUP BY Date ORDER BY date";
+      $r = @mysqli_query ($dbc, $q);
+      if (mysqli_num_rows($r) > 0) {
+        while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+          $daily_total_user [] = $row['daily quizzes'];
+          $daily_avg_user [] = round(floatval($row['daily total average']) * 100, 2);
+          $dates [] = $row['Date'];
+        }
+
+        if (count($daily_total_user) < 7) {
+          $day = -8;
+          foreach ($dates as $key => $date) {
+            if ($date == date('Y-m-d', strtotime($day.' day'))) {
+            } else {
+              array_splice( $daily_total_user, $key, 0, 0 );
+              $day++;
+            }
+            $day++;
           }
         }
 
-        //sacar stats por dia
-        $cont = 0;
-        $date_before = substr($oneweek, 0, 10);
-        $average_per_day = array();
-        $average_per_day [$cont] = 0;
-        foreach ($averages as $key => $value) {
-          if ($date_before == $dates[$key]) $average_per_day [$cont] += $value;
-          else {
-            $date_before = $dates[$key];
-            $cont++;
-            $average_per_day [$cont] = 0;
+        if (count($daily_avg_user) < 7) {
+          $day = -8;
+          foreach ($dates as $key => $date) {
+            if ($date == date('Y-m-d', strtotime($day.' day'))) {
+            } else {
+              array_splice( $daily_avg_user, $key, 0, 0 );
+              $day++;
+            }
+            $day++;
           }
         }
 
-        foreach ($average_per_day as $key => $daily_avg) {
-          if ($daily_avg == 0) $average_per_day[$key] = 0;
-          else $average_per_day [$key] = round(($daily_avg/$total_per_day[$key])*100, 2);
-        }
-
-			} else echo print_message('danger', 'No register in the last week.');
+        $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') GROUP BY Date ORDER BY date";
+        $r = @mysqli_query ($dbc, $q);
+          while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+            $daily_total_all [] = $row['daily quizzes'];
+            $daily_avg_all [] = round(floatval($row['daily total average']) * 100, 2);
+          }
+      } else echo print_message('danger', 'No register in the last week.');
 
 ?>
 <script src="includes/utils.js"></script>
@@ -132,36 +125,25 @@ var config1 = {
       borderColor: window.chartColors.red,
       pointBackgroundColor: window.chartColors.red,
       data: [
-      <?php
-      foreach ($suma_avg as $key => $value) {
-      	echo $value;
-      	if ($key != count($suma_avg)) echo ',';
-      }
-      ?>
+        <?php
+        foreach ($user_averages as $key => $value) {
+        	echo $value;
+        	if ($key != count($user_averages)) echo ',';
+        }
+        ?>
       ]
-    }/*, {
-      label: "My friend",
-      backgroundColor: color(window.chartColors.orange).alpha(0.2).rgbString(),
-      borderColor: window.chartColors.orange,
-      pointBackgroundColor: window.chartColors.orange,
-      data: [
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor()
-      ]
-    }*/, {
+    }, {
       label: "All user average",
       backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
       borderColor: window.chartColors.blue,
       pointBackgroundColor: window.chartColors.blue,
       data: [
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor()
+        <?php
+        foreach ($all_averages as $key => $value) {
+          echo $value;
+          if ($key != count($all_averages)) echo ',';
+        }
+      ?>
       ]
     },]
   },
@@ -171,11 +153,14 @@ var config1 = {
     },
     title: {
       display: true,
-      text: 'Comparation chart'
+      text: 'Comparation chart in % of correct answers per quiz'
     },
     scale: {
       ticks: {
-        beginAtZero: true
+        beginAtZero: true,
+        max: 100,
+        min: 0,
+        stepSize: 10
       }
     }
   }
@@ -190,41 +175,25 @@ var config2 = {
       borderColor: window.chartColors.red,
       data: [
       <?php
-        foreach ($total_per_day as  $daily) {
+        foreach ($daily_total_user as  $daily) {
           echo "$daily, ";
         }
       ?>
       ],
       fill: false,
-  	}/*,{
-      label: "My friend",
-      backgroundColor: window.chartColors.orange,
-      borderColor: window.chartColors.orange,
-      data: [
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor()
-      ],
-      fill: false,
-  	}, {
+  	},{
       label: "Users average",
       fill: false,
       backgroundColor: window.chartColors.blue,
       borderColor: window.chartColors.blue,
       data: [
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor()
+      <?php
+        foreach ($daily_total_all as  $daily) {
+          echo "$daily, ";
+        }
+      ?>
       ],
-    }*/]
+    }]
   },
   options: {
     responsive: true,
@@ -249,6 +218,9 @@ var config2 = {
         }
       }],
       yAxes: [{
+        ticks : {
+          beginAtZero: true
+        },
         display: true,
         scaleLabel: {
           display: true,
@@ -268,39 +240,23 @@ var config3 = {
       borderColor: window.chartColors.red,
       data: [
         <?php
-        foreach ($average_per_day as  $daily_avg) {
+        foreach ($daily_avg_user as  $daily_avg) {
           echo "$daily_avg, ";
         }
       ?>
       ],
       fill: false,
-  	},/*{
-      label: "My friend",
-      backgroundColor: window.chartColors.orange,
-      borderColor: window.chartColors.orange,
-      data: [
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor()
-      ],
-      fill: false,
-  	}, */{
+  	},{
       label: "Users average",
       fill: false,
       backgroundColor: window.chartColors.blue,
       borderColor: window.chartColors.blue,
       data: [
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor()
+        <?php
+        foreach ($daily_avg_all as  $daily_avg) {
+          echo "$daily_avg, ";
+        }
+      ?>
       ],
     }]
   },
@@ -327,10 +283,16 @@ var config3 = {
         }
       }],
       yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          max: 100,
+          min: 0,
+          stepSize: 10
+        },
         display: true,
         scaleLabel: {
           display: true,
-          labelString: 'Average'
+          labelString: '% of correct answers'
         }
       }]
     }
