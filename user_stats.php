@@ -4,7 +4,7 @@ include('includes/print_messages.php');
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 	require ('mysqli_connect.php');
-	$uid = $_GET['uid'];
+	$uid = intval($_GET['uid']);
 
 	$q = "SELECT nick FROM users WHERE id_user=$uid";
 	$r = @mysqli_query ($dbc, $q);
@@ -51,18 +51,47 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 			//semana pasada: strtotime('-1 week');
 			$oneweek = date('Y-m-d H:i:s', strtotime('-1 week -1 day'));
 			$yesterday = date('Y-m-d H:i:s', strtotime('-1 day'));
-			var_dump($last_date);
-			$q = "SELECT average, date FROM statistics WHERE (date BETWEEN $oneweek AND $yesterday) AND id_user=$uid";
+			$q = "SELECT average, date FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') AND id_user=$uid ORDER BY date";
 			$r = @mysqli_query ($dbc, $q);
-			$num = mysqli_num_rows($r);
-			if ($num > 0) {
+			if (mysqli_num_rows($r) > 0) {
 				while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-					$average [] = $row['average'];
-					$date [] = $row['date'];
-					// usar date para sacar la media diara y el total de partidas jugadas
+					$averages [] = $row['average'];
+					$dates [] =  substr($row['date'], 0, 10);
 				}
 
-			}
+        $cont = 0;
+        $date_before = substr($oneweek, 0, 10);
+        $total_per_day = array();
+        $total_per_day [$cont] = 0;
+        foreach ($dates as $date) {
+          if ($date_before == $date) $total_per_day [$cont] ++;
+          else {
+            $date_before = $date;
+            $cont++;
+            $total_per_day [$cont] = 0;
+          }
+        }
+
+        //sacar stats por dia
+        $cont = 0;
+        $date_before = substr($oneweek, 0, 10);
+        $average_per_day = array();
+        $average_per_day [$cont] = 0;
+        foreach ($averages as $key => $value) {
+          if ($date_before == $dates[$key]) $average_per_day [$cont] += $value;
+          else {
+            $date_before = $dates[$key];
+            $cont++;
+            $average_per_day [$cont] = 0;
+          }
+        }
+
+        foreach ($average_per_day as $key => $daily_avg) {
+          if ($daily_avg == 0) $average_per_day[$key] = 0;
+          else $average_per_day [$key] = round(($daily_avg/$total_per_day[$key])*100, 2);
+        }
+
+			} else echo print_message('danger', 'No register in the last week.');
 
 ?>
 <script src="includes/utils.js"></script>
@@ -160,16 +189,14 @@ var config2 = {
       backgroundColor: window.chartColors.red,
       borderColor: window.chartColors.red,
       data: [
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor()
+      <?php
+        foreach ($total_per_day as  $daily) {
+          echo "$daily, ";
+        }
+      ?>
       ],
       fill: false,
-  	},/*{
+  	}/*,{
       label: "My friend",
       backgroundColor: window.chartColors.orange,
       borderColor: window.chartColors.orange,
@@ -183,7 +210,7 @@ var config2 = {
         randomScalingFactor()
       ],
       fill: false,
-  	}, */{
+  	}, {
       label: "Users average",
       fill: false,
       backgroundColor: window.chartColors.blue,
@@ -197,7 +224,7 @@ var config2 = {
         randomScalingFactor(),
         randomScalingFactor()
       ],
-    }]
+    }*/]
   },
   options: {
     responsive: true,
@@ -240,13 +267,11 @@ var config3 = {
       backgroundColor: window.chartColors.red,
       borderColor: window.chartColors.red,
       data: [
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor()
+        <?php
+        foreach ($average_per_day as  $daily_avg) {
+          echo "$daily_avg, ";
+        }
+      ?>
       ],
       fill: false,
   	},/*{
@@ -316,7 +341,6 @@ window.onload = function() {
   window.myRadar = new Chart(document.getElementById("canvas1"), config1);
   window.myLine1 = new Chart(document.getElementById("canvas2").getContext("2d"), config2);
   window.myLine2 = new Chart(document.getElementById("canvas3").getContext("2d"), config3);
-  console.log(moment().format('MMMM Do YYYY, h:mm:ss a'));
 };
 
 </script>
