@@ -1,4 +1,4 @@
-<?php # Script 12.8 - login.php #3
+<?php #login.php #3
 // This page processes the login form submission.
 // The script now uses sessions.
 
@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		
 		// Set the session data:
 		session_start();
-		$_SESSION['user_id'] = $data['user_id'];
-		$_SESSION['first_name'] = $data['first_name'];
+		$_SESSION['id_user'] = $data['id_user'];
+		$_SESSION['nick'] = $data['nick'];
 		
 		// Redirect:
 		redirect_user('loggedin.php');
@@ -35,4 +35,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 // Create the page:
 include ('includes/login_page.inc.php');
+
 ?>

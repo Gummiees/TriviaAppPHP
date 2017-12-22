@@ -52,7 +52,7 @@ function check_login($dbc, $email = '', $pass = '') {
 	if (empty($errors)) { // If everything's OK.
 
 		// Retrieve the user_id and first_name for that email/password combination:
-		$q = "SELECT user_id, first_name FROM tasks WHERE email='$e' AND pass=SHA1('$p')";		
+		$q = "SELECT id_user, nick FROM users WHERE email='$e' AND pass=SHA1('$p')";		
 		$r = @mysqli_query ($dbc, $q); // Run the query.
 		
 		// Check the result:

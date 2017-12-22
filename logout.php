@@ -2,10 +2,10 @@
 // This page lets the user logout.
 // This version uses sessions.
 
-session_start(); // Access the existing session.
+session_start();
 
 // If no session variable exists, redirect the user:
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['id_user'])) {
 
 	// Need the functions:
 	require ('includes/login_functions.inc.php');
