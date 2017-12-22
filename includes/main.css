@@ -14,3 +14,41 @@
 	font-size: 1.5em;
 }
 
+.respuestas {
+	font-size: 1.5em;
+}
+
+.respuesta-incorrecta {
+	color: red;
+}
+
+.respuesta-correcta {
+	color: #2acc2a;
+}
+
+legend {
+	font-size: 2em;
+}
+
+.custom-control-description {
+	font-size: 1.5em;
+}
+
+.custom-control-indicator {
+	vertical-align: middle;
+}
+
+.footer-icon {
+	color: #adadad;
+	font-size: 2em;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.footer-icon:hover {
+	color: #000;
+	-webkit-transition: color 500ms ease-out;
+  -moz-transition: color 500ms ease-out;
+  -o-transition: color 500ms ease-out;
+  transition: color 500ms ease-out;
+}
