@@ -1,10 +1,67 @@
 <?php
 include("includes/header.html");
 include('includes/print_messages.php');
-if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
+function setUserAverages ($uid, $dbc) {
+
+  $q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` WHERE id_user=$uid GROUP BY id_quiz";
+  $r = @mysqli_query ($dbc, $q);
+  $num = mysqli_num_rows($r);
+  if ($num > 0) {
+    while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+      $user_averages [] = round(floatval($row['total average']) * 100, 2);
+    }
+  }
+  return $user_averages;
+}
+
+function setDailyUserStats ($uid, $oneweek, $yesterday, $dbc) {
+  $daily_stats_user = array('daily_total_user' => [], 'daily_avg_user' => [], 'dates' => []);
+  $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') AND id_user=$uid GROUP BY Date ORDER BY date";
+  $r = @mysqli_query ($dbc, $q);
+  if (mysqli_num_rows($r) > 0) {
+    while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+        $daily_stats_user['daily_total_user'] [] = $row['daily quizzes'];
+        $daily_stats_user['daily_avg_user'] [] = round(floatval($row['daily total average']) * 100, 2);
+        $daily_stats_user['dates'] [] = $row['Date'];
+    }
+    if (count($daily_stats_user['daily_total_user']) < 7) {
+      $day = -8;
+      for ($i=0; $i<7; $i++) {
+        $set = true;
+        for ($j=0;$j<count($daily_stats_user['dates']); $j++) {
+          if ($daily_stats_user['dates'][$j] != date('Y-m-d', strtotime($day.' day'))) {
+          } else $set = false;
+        }
+        if ($set) array_splice( $daily_stats_user['daily_total_user'], $i, 0, 0 );
+        $day++;
+      }
+    }
+
+    if (count($daily_stats_user['daily_avg_user']) < 7) {
+      $day = -8;
+      for ($i=0; $i<7; $i++) {
+        $set = true;
+        for ($j=0;$j<count($daily_stats_user['dates']); $j++) {
+          if ($daily_stats_user['dates'][$j] != date('Y-m-d', strtotime($day.' day'))) {
+          } else $set = false;
+        }
+        if ($set) array_splice( $daily_stats_user['daily_avg_user'], $i, 0, 0 );
+        $day++;
+      }
+    }
+  }
+  return $daily_stats_user;
+}
+
+if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 	require ('mysqli_connect.php');
 	$uid = intval($_GET['uid']);
+  $oneweek = date('Y-m-d H:i:s', strtotime('-1 week -1 day'));
+  $yesterday = date('Y-m-d H:i:s', strtotime('-1 day'));
+  //var_dump($oneweek);
+  //var_dump($yesterday);
+  $colors = ['red','yellow','green','blue','purple'];
 
 	$q = "SELECT nick FROM users WHERE id_user=$uid";
 	$r = @mysqli_query ($dbc, $q);
@@ -12,7 +69,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 	if (mysqli_num_rows($r) == 1) {
 
 		$row = mysqli_fetch_array($r, MYSQLI_ASSOC);
-		$nick = $row['nick'];
+    $nick = $row['nick'];
 
     $q = "SELECT title FROM quizzes";
     $r = @mysqli_query ($dbc, $q);
@@ -20,71 +77,40 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
       $quiz_titles [] = $row['title'];
     }
 
-    // calculate total average 
+    $stats [$nick] = array('user_averages' => [], 'daily_stats' => []);
+    $stats [$nick] ['user_averages'] = setUserAverages($uid, $dbc);
+    $stats [$nick] ['daily_stats'] = setDailyUserStats($uid, $oneweek, $yesterday, $dbc);
+    for ($i = 1; $i<5; $i++){
+      if (isset($_GET['uid'.$i]) && is_numeric($_GET['uid'.$i])) {
+        $uid = intval($_GET['uid'.$i]);
+        $q = "SELECT nick FROM users WHERE id_user=$uid";
+        $r = @mysqli_query ($dbc, $q);
 
-    // for uid
-
-		$q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` WHERE id_user=$uid GROUP BY id_quiz";
-		$r = @mysqli_query ($dbc, $q);
-		$num = mysqli_num_rows($r);
-		if ($num > 0) {
-			while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-				$user_averages [] = round(floatval($row['total average']) * 100, 2);
-			}
+        if (mysqli_num_rows($r) == 1) {
+          $row = mysqli_fetch_array($r, MYSQLI_ASSOC);
+          $nick = $row['nick'];
+          $stats [$nick] = array('user_averages' => [], 'daily_stats' => []);
+          $stats [$nick] ['user_averages'] = setUserAverages($uid, $dbc);
+          $stats [$nick] ['daily_stats'] = setDailyUserStats($uid, $oneweek, $yesterday, $dbc);
+        }
+      } else break;
+    }
 
       // for all users
 
-      $q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` GROUP BY id_quiz";
-      $r = @mysqli_query ($dbc, $q);
-      while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-        $all_averages [] = round(floatval($row['total average']) * 100, 2);
-      }
+    $q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` GROUP BY id_quiz";
+    $r = @mysqli_query ($dbc, $q);
+    while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+      $all_averages [] = round(floatval($row['total average']) * 100, 2);
+    }
 
-			$oneweek = date('Y-m-d H:i:s', strtotime('-1 week -1 day'));
-			$yesterday = date('Y-m-d H:i:s', strtotime('-1 day'));
-      //var_dump($oneweek);
-      //var_dump($yesterday);
-
-      $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') AND id_user=$uid GROUP BY Date ORDER BY date";
+      $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') GROUP BY Date ORDER BY date";
       $r = @mysqli_query ($dbc, $q);
-      if (mysqli_num_rows($r) > 0) {
         while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-          $daily_total_user [] = $row['daily quizzes'];
-          $daily_avg_user [] = round(floatval($row['daily total average']) * 100, 2);
-          $dates [] = $row['Date'];
+          $daily_total_all [] = $row['daily quizzes'];
+          $daily_avg_all [] = round(floatval($row['daily total average']) * 100, 2);
         }
-
-        if (count($daily_total_user) < 7) {
-          $day = -8;
-          foreach ($dates as $key => $date) {
-            if ($date == date('Y-m-d', strtotime($day.' day'))) {
-            } else {
-              array_splice( $daily_total_user, $key, 0, 0 );
-              $day++;
-            }
-            $day++;
-          }
-        }
-
-        if (count($daily_avg_user) < 7) {
-          $day = -8;
-          foreach ($dates as $key => $date) {
-            if ($date == date('Y-m-d', strtotime($day.' day'))) {
-            } else {
-              array_splice( $daily_avg_user, $key, 0, 0 );
-              $day++;
-            }
-            $day++;
-          }
-        }
-
-        $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') GROUP BY Date ORDER BY date";
-        $r = @mysqli_query ($dbc, $q);
-          while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-            $daily_total_all [] = $row['daily quizzes'];
-            $daily_avg_all [] = round(floatval($row['daily total average']) * 100, 2);
-          }
-      } else echo print_message('danger', 'No register in the last week.');
+    } else echo print_message('danger', 'No register in the last week.');
 
 ?>
 <script src="includes/utils.js"></script>
@@ -119,33 +145,26 @@ var config1 = {
     	}
     	echo "]";
     ?>,
-    datasets: [{
+    datasets: [<?php $i=0; foreach ($stats as $nick => $value) {?>{
       label: "<?php echo $nick;?>",
-      backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
-      borderColor: window.chartColors.red,
-      pointBackgroundColor: window.chartColors.red,
-      data: [
-        <?php
-        foreach ($user_averages as $key => $value) {
-        	echo $value;
-        	if ($key != count($user_averages)) echo ',';
-        }
-        ?>
-      ]
-    }, {
-      label: "All user average",
-      backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
-      borderColor: window.chartColors.blue,
-      pointBackgroundColor: window.chartColors.blue,
-      data: [
-        <?php
-        foreach ($all_averages as $key => $value) {
-          echo $value;
-          if ($key != count($all_averages)) echo ',';
-        }
-      ?>
-      ]
-    },]
+      backgroundColor: color(window.chartColors.<?php echo $colors[$i]; ?>).alpha(0.2).rgbString(),
+      borderColor: window.chartColors.<?php echo $colors[$i]; ?>,
+      pointBackgroundColor: window.chartColors.<?php echo $colors[$i]; ?>,
+      data: [<?php
+      foreach ($stats[$nick]['user_averages'] as $avg) {
+          echo $avg;
+        	if ($key != count($avg)) echo ',';
+        }?>]
+    },<?php $i++; } ?>{
+      label: "All users average",
+      backgroundColor: color(window.chartColors.grey).alpha(0.2).rgbString(),
+      borderColor: window.chartColors.grey,
+      pointBackgroundColor: window.chartColors.grey,
+      data: [<?php foreach ($all_averages as $key => $avg) {
+         echo "$avg, ";
+      }?>]
+    }
+    ]
   },
   options: {
     legend: {
@@ -160,7 +179,7 @@ var config1 = {
         beginAtZero: true,
         max: 100,
         min: 0,
-        stepSize: 10
+        stepSize: 20
       }
     }
   }
@@ -169,23 +188,21 @@ var config2 = {
   type: 'line',
 	data: {
     labels: last7days,
-    datasets: [{
+    datasets: [<?php $i=0; foreach ($stats as $nick => $value) {?>{
       label: "<?php echo $nick;?>",
-      backgroundColor: window.chartColors.red,
-      borderColor: window.chartColors.red,
-      data: [
-      <?php
-        foreach ($daily_total_user as  $daily) {
-          echo "$daily, ";
-        }
-      ?>
-      ],
+      backgroundColor: window.chartColors.<?php echo $colors[$i]; ?>,
+      borderColor: window.chartColors.<?php echo $colors[$i]; ?>,
+      data: [<?php
+        foreach ($stats[$nick]['daily_stats']['daily_total_user'] as $avg) {
+          echo $avg;
+          if ($key != count($avg)) echo ',';
+        }?>],
       fill: false,
-  	},{
+  	},<?php $i++; } ?>{
       label: "Users average",
       fill: false,
-      backgroundColor: window.chartColors.blue,
-      borderColor: window.chartColors.blue,
+      backgroundColor: window.chartColors.grey,
+      borderColor: window.chartColors.grey,
       data: [
       <?php
         foreach ($daily_total_all as  $daily) {
@@ -234,23 +251,21 @@ var config3 = {
   type: 'line',
 	data: {
     labels: last7days,
-    datasets: [{
+    datasets: [<?php $i=0; foreach ($stats as $nick => $value) {?>{
       label: "<?php echo $nick;?>",
-      backgroundColor: window.chartColors.red,
-      borderColor: window.chartColors.red,
-      data: [
-        <?php
-        foreach ($daily_avg_user as  $daily_avg) {
-          echo "$daily_avg, ";
-        }
-      ?>
-      ],
+      backgroundColor: window.chartColors.<?php echo $colors[$i]; ?>,
+      borderColor: window.chartColors.<?php echo $colors[$i]; ?>,
+      data: [<?php
+        foreach ($stats[$nick]['daily_stats']['daily_avg_user'] as $avg) {
+          echo $avg;
+          if ($key != count($avg)) echo ',';
+        }?>],
       fill: false,
-  	},{
+  	},<?php $i++; } ?>{
       label: "Users average",
       fill: false,
-      backgroundColor: window.chartColors.blue,
-      borderColor: window.chartColors.blue,
+      backgroundColor: window.chartColors.grey,
+      borderColor: window.chartColors.grey,
       data: [
         <?php
         foreach ($daily_avg_all as  $daily_avg) {
@@ -308,8 +323,6 @@ window.onload = function() {
 </script>
 
 <?php
-			} else echo print_message('danger', 'The user does not exist.');
-		} else echo print_message('danger', 'The user does not have any stats.');
 	} else echo print_message('danger', 'No user selected.');
 include("includes/footer.html");
 ?>
