@@ -1,6 +1,5 @@
 <?php
 session_start();
-include('includes/print_messages.php');
 $page_title = 'Login';
 include ('includes/header.html');
 
@@ -27,5 +26,8 @@ if (!isset($_SESSION['id_user'])) {
 </form>
 
 <?php
-	} else echo print_message('danger', 'You are already logged in.');
+	} else {
+		include('includes/print_messages.php');
+		echo print_message('danger', 'You are already logged in.');
+	}
 include ('includes/footer.html'); ?>

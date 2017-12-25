@@ -1,31 +1,14 @@
-<?php # Script 12.11 - logout.php #2
-// This page lets the user logout.
-// This version uses sessions.
-
+<?php 
 session_start();
 
-// If no session variable exists, redirect the user:
-if (!isset($_SESSION['id_user'])) {
-
-	// Need the functions:
+if (isset($_SESSION['id_user']))  {
 	require ('includes/login_functions.inc.php');
-	redirect_user();	
-	
-} else { // Cancel the session:
-
-	$_SESSION = array(); // Clear the variables.
-	session_destroy(); // Destroy the session itself.
-	setcookie ('PHPSESSID', '', time()-3600); // Destroy the cookie.
-
+	$_SESSION = array();
+	session_destroy();
+	setcookie ('PHPSESSID', '', time()-3600);
+	redirect_user('index.php?log=2');
+} else {
+	include('includes/print_messages.php');
+	echo print_message('danger', 'You are not logged in.');
 }
-
-// Set the page title and include the HTML header:
-$page_title = 'Logged Out!';
-include ('includes/header.html');
-
-// Print a customized message:
-echo "<h1>Logged Out!</h1>
-<p>You are now logged out!</p>";
-
-include ('includes/footer.html');
 ?>
