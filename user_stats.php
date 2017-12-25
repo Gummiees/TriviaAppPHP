@@ -114,6 +114,10 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 ?>
 <script src="includes/utils.js"></script>
+<div class="row text-center"><h2>Total correct: </h2></div>
+<div style="width:80%; margin-left: 10%;">
+  <canvas id="canvas4"></canvas>
+</div>
 <div style="width: 80%; margin-left: 10%;">
   <canvas id="canvas1"></canvas>
 </div>
@@ -122,6 +126,9 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 </div>
 <div style="width:80%; margin-left: 10%;">
   <canvas id="canvas3"></canvas>
+</div>
+<div style="width:80%; margin-left: 10%;">
+  <canvas id="canvas5"></canvas>
 </div>
 <script>
 var last7days = [];
@@ -168,7 +175,7 @@ var config1 = {
   },
   options: {
     legend: {
-      position: 'top',
+      position: 'right',
     },
     title: {
       display: true,
@@ -213,6 +220,9 @@ var config2 = {
     }]
   },
   options: {
+    legend: {
+      position: 'right',
+    },
     responsive: true,
     title:{
       display:true,
@@ -314,10 +324,98 @@ var config3 = {
   }
 };
 
+//pie
+
+var config4 = {
+  type: 'pie',
+  data: {
+    datasets: [{
+      data: [
+        randomScalingFactor(),
+        randomScalingFactor()
+      ],
+      backgroundColor: [
+        window.chartColors.red,
+        window.chartColors.blue
+      ]
+    }],
+    labels: [
+      "Correct",
+      "Wrong"
+    ]
+  },
+  options: {
+    legend: {
+        position: 'right',
+    },
+    title: {
+        display: true,
+        text: 'General % of correct answers'
+    },
+    responsive: true
+  }
+};
+    
+
+//radar
+
+var chartColors = window.chartColors;
+var color = Chart.helpers.color;
+var config5 = {
+  data: {
+    datasets: [{
+      data: [
+        randomScalingFactor(),
+        randomScalingFactor(),
+        randomScalingFactor(),
+        randomScalingFactor(),
+        randomScalingFactor(),
+      ],
+      backgroundColor: [
+        color(chartColors.red).alpha(0.5).rgbString(),
+        color(chartColors.orange).alpha(0.5).rgbString(),
+        color(chartColors.yellow).alpha(0.5).rgbString(),
+        color(chartColors.green).alpha(0.5).rgbString(),
+        color(chartColors.blue).alpha(0.5).rgbString(),
+      ],
+      label: 'My dataset' // for legend
+    }],
+    labels: [
+      "Red",
+      "Orange",
+      "Yellow",
+      "Green",
+      "Blue"
+    ]
+  },
+  options: {
+    responsive: true,
+    legend: {
+        position: 'right',
+    },
+    title: {
+        display: true,
+        text: 'General % of correct answers'
+    },
+    scale: {
+      ticks: {
+        beginAtZero: true
+      },
+      reverse: false
+    },
+    animation: {
+      animateRotate: true,
+      animateScale: true
+    }
+  }
+};
+
 window.onload = function() {
   window.myRadar = new Chart(document.getElementById("canvas1"), config1);
   window.myLine1 = new Chart(document.getElementById("canvas2").getContext("2d"), config2);
   window.myLine2 = new Chart(document.getElementById("canvas3").getContext("2d"), config3);
+  window.myPie = new Chart(document.getElementById("canvas4").getContext("2d"), config4);
+  window.myPolarArea = Chart.PolarArea(document.getElementById("canvas5"), config5);
 };
 
 </script>
