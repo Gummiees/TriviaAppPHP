@@ -1,8 +1,5 @@
-<?php # Script 12.1 - login_page.inc.php
-// This page prints any errors associated with logging in
-// and it creates the entire login page, including the form.
-
-// Include the header:
+<?php
+session_start();
 $page_title = 'Login';
 include ('includes/header.html');
 
@@ -15,13 +12,22 @@ if (isset($errors) && !empty($errors)) {
 	}
 	echo '</p><p>Please try again.</p>';
 }
-
+if (!isset($_SESSION['id_user'])) {
 // Display the form:
-?><h1>Login</h1>
-<form action="login.php" method="post">
-	<p>Email Address: <input type="text" name="email" size="20" maxlength="60" /> </p>
-	<p>Password: <input type="password" name="pass" size="20" maxlength="20" /></p>
-	<p><input type="submit" name="submit" value="Login" /></p>
+?>
+
+<form class="form-signin" action="login.php" method="post">
+  <h1 class="form-signin-heading">Login</h1>
+  <label for="inputEmail" class="sr-only">Email address</label>
+  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus minlength="4" maxlength="60" >
+  <label for="inputPassword" class="sr-only">Password</label>
+  <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="pass" required minlength="4" maxlength="20" >
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 </form>
 
-<?php include ('includes/footer.html'); ?>
+<?php
+	} else {
+		include('includes/print_messages.php');
+		echo print_message('danger', 'You are already logged in.');
+	}
+include ('includes/footer.html'); ?>
