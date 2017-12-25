@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$_SESSION['nick'] = $data['nick'];
 		
 		// Redirect:
-		redirect_user('loggedin.php');
+		redirect_user('index.php?log=1');
 			
 	} else { // Unsuccessful!
 
