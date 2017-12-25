@@ -1,17 +1,18 @@
 <?php
+session_start ();
 require ('mysqli_connect.php');
 include("includes/header.html");
 include('includes/print_messages.php');
-
-if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
-  $qid = $_GET['qid'];
-  $q = "SELECT title, description FROM quizzes WHERE id_quiz=$qid";
-  $r = @mysqli_query ($dbc, $q);
-  $num = mysqli_num_rows($r);
-  if ($num == 1) {
-    $row = mysqli_fetch_array($r, MYSQLI_ASSOC);
-    $quiz_title = $row['title'];
-    $quiz_desc = $row['description'];
+if (isset($_SESSION['id_user'])) {
+  if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
+    $qid = $_GET['qid'];
+    $q = "SELECT title, description FROM quizzes WHERE id_quiz=$qid";
+    $r = @mysqli_query ($dbc, $q);
+    $num = mysqli_num_rows($r);
+    if ($num == 1) {
+      $row = mysqli_fetch_array($r, MYSQLI_ASSOC);
+      $quiz_title = $row['title'];
+      $quiz_desc = $row['description'];
 ?>
 <div class="row">
   <div class="jumbotron text-center col-10 offset-1">
@@ -96,8 +97,9 @@ if (isset($_GET['qid']) && is_numeric($_GET['qid'])) {
 </script>
 </div>
 <?php
-  } else echo print_message('danger', 'Quiz not found on our database.');
-  mysqli_free_result ($r);
-} else echo print_message('danger', 'No quiz selected.');
+    } else echo print_message('danger', 'Quiz not found on our database.');
+    mysqli_free_result ($r);
+  } else echo print_message('danger', 'No quiz selected.');
+} else echo print_message('danger', 'You are not logged in.');
 include("includes/footer.html");
 ?>

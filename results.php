@@ -1,21 +1,23 @@
 <?php
+session_start ();
 include("includes/header.html");
 include('includes/print_messages.php');
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST['respuestas'])) {
-	require ('mysqli_connect.php');
+if (isset($_SESSION['id_user'])) {
+	if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST['respuestas'])) {
+		require ('mysqli_connect.php');
 
-	$res_usr = $_POST['respuestas'];
-	$res_usr = preg_split("/¬+/", $res_usr);
-	$radio = 'radio'.(count($res_usr));
-	$res_usr[] = $_POST[$radio];
+		$res_usr = $_POST['respuestas'];
+		$res_usr = preg_split("/¬+/", $res_usr);
+		$radio = 'radio'.(count($res_usr));
+		$res_usr[] = $_POST[$radio];
 
-	$qid = $_GET['qid'];
-	$uid = $_SESSION['id_user'];
+		$qid = $_GET['qid'];
+		$uid = $_SESSION['id_user'];
 
-	$q = "SELECT title FROM quizzes WHERE id_quiz=$qid";
-  $r = @mysqli_query ($dbc, $q);
-  $row = mysqli_fetch_array($r, MYSQLI_ASSOC);
-  $quiz_title = $row['title'];
+		$q = "SELECT title FROM quizzes WHERE id_quiz=$qid";
+	  $r = @mysqli_query ($dbc, $q);
+	  $row = mysqli_fetch_array($r, MYSQLI_ASSOC);
+	  $quiz_title = $row['title'];
 ?>
 <div class="row">
   <div class="jumbotron text-center col-10 offset-1">
@@ -65,13 +67,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['qid']) && isset($_POST[
 </div>
 
 <?php
-	$preg++;}
-	$media = 1 - ($incorrectas/count($questions)); // entre 0 y 1
-	echo "$incorrectas / ".count($questions)." = $media";
-	$q = "INSERT INTO stadistics_user (id_quiz, average) VALUES ($qid, $media)";
-	$r = @mysqli_query ($dbc, $q);
-	$q = "INSERT INTO stadistics_quiz (id_user, average) VALUES ($uid, $media)";
-	$r = @mysqli_query ($dbc, $q);
-} else echo print_message('danger', 'You cannot access results unless you finished a quiz.');
+		$preg++;}
+		$media = 1 - ($incorrectas/count($questions)); // entre 0 y 1
+		echo "$incorrectas / ".count($questions)." = $media";
+		$q = "INSERT INTO stadistics_user (id_quiz, average) VALUES ($qid, $media)";
+		$r = @mysqli_query ($dbc, $q);
+		$q = "INSERT INTO stadistics_quiz (id_user, average) VALUES ($uid, $media)";
+		$r = @mysqli_query ($dbc, $q);
+	} else echo print_message('danger', 'You cannot access results unless you finished a quiz.');
+} else echo print_message('danger', 'You are not logged in.');
 include("includes/footer.html");
 ?>
