@@ -83,3 +83,15 @@ legend {
   -o-transition: color 500ms ease-out;
   transition: color 500ms ease-out;
 }
+
+.container-canvas {
+  width: 80%;
+  margin-left: 10%;
+}
+
+@media screen and (min-width: 1180px) {
+    .container-canvas {
+        width: 50%;
+        margin-left: 25%;
+    }
+}

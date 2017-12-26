@@ -70,7 +70,7 @@ if (isset($_SESSION['id_user'])) {
 			$preg++;
 		}
 		$media = 1 - ($incorrectas/count($questions));
-		$q = "INSERT INTO statistics (id_user, id_quiz, average) VALUES ($uid, $qid, $media)";
+		$q = "INSERT INTO statistics (id_user, id_quiz, average, date) VALUES ($uid, $qid, $media, CONVERT(CURRENT_DATE, DATETIME))";
 		$r = @mysqli_query ($dbc, $q);
 ?>
 <div class="row" style="margin-top: 50px;">

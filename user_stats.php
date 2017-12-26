@@ -1,8 +1,8 @@
+<script src="includes/utils.js"></script>
 <?php
 session_start();
 include("includes/header.html");
 include('includes/print_messages.php');
-
 function setUserAverages ($uid, $dbc) {
 
   $q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` WHERE id_user=$uid GROUP BY id_quiz";
@@ -57,7 +57,7 @@ function setDailyUserStats ($uid, $oneweek, $today, $dbc) {
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 	require ('mysqli_connect.php');
 	$uid = intval($_GET['uid']);
-  $oneweek = date('Y-m-d H:i:s', strtotime('-6 day'));
+  $oneweek = date('Y-m-d H:i:s',strtotime('-6 day', strtotime(date('Y-m-d')." 00:00:00")));
   $today = date('Y-m-d H:i:s', strtotime('tomorrow'));
   //var_dump($oneweek);
   //var_dump($today);
@@ -80,6 +80,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     $stats [$nick] = array('user_averages' => [], 'daily_stats' => []);
     $stats [$nick] ['user_averages'] = setUserAverages($uid, $dbc);
     $stats [$nick] ['daily_stats'] = setDailyUserStats($uid, $oneweek, $today, $dbc);
+    if (!isset($_GET['uid1'])) {
 ?>
 
 <div class="row">
@@ -89,7 +90,42 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
   </div>
 </div>
 
+<div class="row"><h2>Total correct: </h2></div>
+<div class="container-canvas">
+    <canvas id="canvas4"></canvas>
+
+<script>
+var alone = true;
+var config4 = {
+  type: 'pie',
+  data: {
+    datasets: [{
+      data: [
+        randomScalingFactor(),
+        randomScalingFactor()
+      ],
+      backgroundColor: [
+        window.chartColors.red,
+        window.chartColors.blue
+      ]
+    }],
+    labels: [
+      "Correct",
+      "Wrong"
+    ]
+  },
+  options: {
+    title: {
+        display: true,
+        text: 'General % of correct answers'
+    },
+    responsive: true
+  }
+};
+</script>
+
 <?php 
+    } else echo "<script>var alone=false;</script><div class='container-canvas'><div class='canvas'><canvas id='canvas5'></canvas></div>";
     for ($i = 1; $i<5; $i++){
       if (isset($_GET['uid'.$i]) && is_numeric($_GET['uid'.$i])) {
         $uid = intval($_GET['uid'.$i]);
@@ -108,13 +144,18 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
       // for all users
 
+    $q = "SELECT COUNT(id_user) AS 'total' FROM `users`";
+    $r = @mysqli_query ($dbc, $q);
+    $row = mysqli_fetch_array($r, MYSQLI_ASSOC);
+    $total_users = $row['total'];
+
     $q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` GROUP BY id_quiz";
     $r = @mysqli_query ($dbc, $q);
     while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
       $all_averages [] = round(floatval($row['total average']) * 100, 2);
     }
 
-      $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$today') GROUP BY Date ORDER BY date";
+      $q = "SELECT COUNT(id_user)/$total_users AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$today') GROUP BY Date ORDER BY date";
       $r = @mysqli_query ($dbc, $q);
       while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
         $daily_total_all [] = $row['daily quizzes'];
@@ -148,22 +189,9 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     } else echo print_message('danger', 'No register in the last week.');
 
 ?>
-<script src="includes/utils.js"></script>
-<div class="row"><h2>Total correct: </h2></div>
-<div style="width:80%; margin-left: 10%;">
-  <canvas id="canvas4"></canvas>
-</div>
-<div style="width: 80%; margin-left: 10%;">
   <canvas id="canvas1"></canvas>
-</div>
-<div style="width:80%; margin-left: 10%;">
   <canvas id="canvas2"></canvas>
-</div>
-<div style="width:80%; margin-left: 10%;">
   <canvas id="canvas3"></canvas>
-</div>
-<div style="width:80%; margin-left: 10%;">
-  <canvas id="canvas5"></canvas>
 </div>
 <script>
 var last7days = [];
@@ -209,9 +237,6 @@ var config1 = {
     ]
   },
   options: {
-    legend: {
-      position: 'right',
-    },
     title: {
       display: true,
       text: 'Comparation chart in % of correct answers per quiz'
@@ -230,13 +255,14 @@ var config2 = {
   type: 'line',
 	data: {
     labels: last7days,
-    datasets: [<?php $i=0; foreach ($stats as $nick => $value) {?>{
+    datasets: [<?php $i=0; $max=0; foreach ($stats as $nick => $value) {?>{
       label: "<?php echo $nick;?>",
       backgroundColor: window.chartColors.<?php echo $colors[$i]; ?>,
       borderColor: window.chartColors.<?php echo $colors[$i]; ?>,
       data: [<?php
         foreach ($stats[$nick]['daily_stats']['daily_total_user'] as $avg) {
           echo $avg;
+          if ($avg > $max) $max = $avg;
           if ($key != count($avg)) echo ',';
         }?>],
       fill: false,
@@ -255,9 +281,6 @@ var config2 = {
     }]
   },
   options: {
-    legend: {
-      position: 'right',
-    },
     responsive: true,
     title:{
       display:true,
@@ -281,7 +304,8 @@ var config2 = {
       }],
       yAxes: [{
         ticks : {
-          beginAtZero: true
+          beginAtZero: true,
+          max: <?php echo $max;?> + 1
         },
         display: true,
         scaleLabel: {
@@ -357,43 +381,9 @@ var config3 = {
       }]
     }
   }
-};
-
-//pie
-
-var config4 = {
-  type: 'pie',
-  data: {
-    datasets: [{
-      data: [
-        randomScalingFactor(),
-        randomScalingFactor()
-      ],
-      backgroundColor: [
-        window.chartColors.red,
-        window.chartColors.blue
-      ]
-    }],
-    labels: [
-      "Correct",
-      "Wrong"
-    ]
-  },
-  options: {
-    legend: {
-        position: 'right',
-    },
-    title: {
-        display: true,
-        text: 'General % of correct answers'
-    },
-    responsive: true
-  }
-};
-    
+};    
 
 //radar
-
 var chartColors = window.chartColors;
 var color = Chart.helpers.color;
 var config5 = {
@@ -425,9 +415,6 @@ var config5 = {
   },
   options: {
     responsive: true,
-    legend: {
-        position: 'right',
-    },
     title: {
         display: true,
         text: 'General % of correct answers'
@@ -449,8 +436,8 @@ window.onload = function() {
   window.myRadar = new Chart(document.getElementById("canvas1"), config1);
   window.myLine1 = new Chart(document.getElementById("canvas2").getContext("2d"), config2);
   window.myLine2 = new Chart(document.getElementById("canvas3").getContext("2d"), config3);
-  window.myPie = new Chart(document.getElementById("canvas4").getContext("2d"), config4);
-  window.myPolarArea = Chart.PolarArea(document.getElementById("canvas5"), config5);
+  if (alone) window.myPie = new Chart(document.getElementById("canvas4").getContext("2d"), config4);
+  else window.myPolarArea = Chart.PolarArea(document.getElementById("canvas5"), config5);
 };
 
 </script>
