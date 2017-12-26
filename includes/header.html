@@ -42,7 +42,7 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <?php
-                    if (isset($_SESSION["nick"])) { echo '<a class="nav-link" href="profile.php">'.$_SESSION["nick"].'</a>';}
+                    if (isset($_SESSION["nick"])) { echo '<a class="nav-link" href="user_stats.php?uid='.$_SESSION["id_user"].'">'.$_SESSION["nick"].'</a>';}
                     else { echo '<a class="nav-link" href="login.php">Login</a>';} ?>
                 </li>
                 <li class="navbar-item">

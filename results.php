@@ -28,15 +28,15 @@ if (isset($_SESSION['id_user'])) {
 <hr>
 
 <?php
-	$q = "SELECT Qt.description, Qt.id_question FROM questions AS Qt INNER JOIN quizzes AS Qz
-	ON Qz.id_quiz = Qt.id_quiz WHERE Qz.id_quiz=$qid";
-	$r = @mysqli_query ($dbc, $q);
-	while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-		$questions[$row['id_question']] = $row['description'];
-	}
-	$incorrectas = 0;
-	$preg = 0;
-	foreach ($questions as $key => $question) {
+		$q = "SELECT Qt.description, Qt.id_question FROM questions AS Qt INNER JOIN quizzes AS Qz
+		ON Qz.id_quiz = Qt.id_quiz WHERE Qz.id_quiz=$qid";
+		$r = @mysqli_query ($dbc, $q);
+		while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+			$questions[$row['id_question']] = $row['description'];
+		}
+		$incorrectas = 0;
+		$preg = 0;
+		foreach ($questions as $key => $question) {
 ?>
 
 <div class="row">
@@ -53,9 +53,9 @@ if (isset($_SESSION['id_user'])) {
 	foreach ($answers as $answer => $value) {
 		if (0 == $value && $res_usr[$preg] == $answer) {
 		 echo '<div class="row respuesta-incorrecta"><div class="col-1 text-center"><i class="fa fa-times" aria-hidden="true"></i></div>';
+			$incorrectas++;
 		} else if (1 == $value) {
 			echo '<div class="row respuesta-correcta"><div class="col-1 text-center"><i class="fa fa-check" aria-hidden="true"></i></div>';
-			$incorrectas++;
 		} else {
 			echo '<div class="row"><div class="col-1 text-center"><i class="fa fa-circle-o" aria-hidden="true"></i></div>';
 		}
@@ -67,13 +67,23 @@ if (isset($_SESSION['id_user'])) {
 </div>
 
 <?php
-		$preg++;}
-		$media = 1 - ($incorrectas/count($questions)); // entre 0 y 1
-		echo "$incorrectas / ".count($questions)." = $media";
-		$q = "INSERT INTO stadistics_user (id_quiz, average) VALUES ($qid, $media)";
+			$preg++;
+		}
+		$media = 1 - ($incorrectas/count($questions));
+		$q = "INSERT INTO statistics (id_user, id_quiz, average) VALUES ($uid, $qid, $media)";
 		$r = @mysqli_query ($dbc, $q);
-		$q = "INSERT INTO stadistics_quiz (id_user, average) VALUES ($uid, $media)";
-		$r = @mysqli_query ($dbc, $q);
+?>
+<div class="row" style="margin-top: 50px;">
+	<div class="col-4 offset-4">
+		<button class="btn btn-lg btn-primary btn-block" type="button" onclick="Redirect()">See my statistics</button>
+	</div>
+</div>
+<script>
+		function Redirect () {
+			window.location.href="user_stats.php?uid=<?php echo $uid;?>";
+		}
+</script>
+<?php
 	} else echo print_message('danger', 'You cannot access results unless you finished a quiz.');
 } else echo print_message('danger', 'You are not logged in.');
 include("includes/footer.html");

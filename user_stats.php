@@ -1,4 +1,5 @@
 <?php
+session_start();
 include("includes/header.html");
 include('includes/print_messages.php');
 
@@ -15,9 +16,9 @@ function setUserAverages ($uid, $dbc) {
   return $user_averages;
 }
 
-function setDailyUserStats ($uid, $oneweek, $yesterday, $dbc) {
+function setDailyUserStats ($uid, $oneweek, $today, $dbc) {
   $daily_stats_user = array('daily_total_user' => [], 'daily_avg_user' => [], 'dates' => []);
-  $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') AND id_user=$uid GROUP BY Date ORDER BY date";
+  $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$today') AND id_user=$uid GROUP BY Date ORDER BY date";
   $r = @mysqli_query ($dbc, $q);
   if (mysqli_num_rows($r) > 0) {
     while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
@@ -25,13 +26,13 @@ function setDailyUserStats ($uid, $oneweek, $yesterday, $dbc) {
         $daily_stats_user['daily_avg_user'] [] = round(floatval($row['daily total average']) * 100, 2);
         $daily_stats_user['dates'] [] = $row['Date'];
     }
+
     if (count($daily_stats_user['daily_total_user']) < 7) {
-      $day = -8;
+      $day = -6;
       for ($i=0; $i<7; $i++) {
         $set = true;
         for ($j=0;$j<count($daily_stats_user['dates']); $j++) {
-          if ($daily_stats_user['dates'][$j] != date('Y-m-d', strtotime($day.' day'))) {
-          } else $set = false;
+          if ($daily_stats_user['dates'][$j] == date('Y-m-d', strtotime($day.' day'))) $set = false;
         }
         if ($set) array_splice( $daily_stats_user['daily_total_user'], $i, 0, 0 );
         $day++;
@@ -39,12 +40,11 @@ function setDailyUserStats ($uid, $oneweek, $yesterday, $dbc) {
     }
 
     if (count($daily_stats_user['daily_avg_user']) < 7) {
-      $day = -8;
+      $day = -6;
       for ($i=0; $i<7; $i++) {
         $set = true;
         for ($j=0;$j<count($daily_stats_user['dates']); $j++) {
-          if ($daily_stats_user['dates'][$j] != date('Y-m-d', strtotime($day.' day'))) {
-          } else $set = false;
+          if ($daily_stats_user['dates'][$j] == date('Y-m-d', strtotime($day.' day'))) $set = false;
         }
         if ($set) array_splice( $daily_stats_user['daily_avg_user'], $i, 0, 0 );
         $day++;
@@ -57,10 +57,10 @@ function setDailyUserStats ($uid, $oneweek, $yesterday, $dbc) {
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 	require ('mysqli_connect.php');
 	$uid = intval($_GET['uid']);
-  $oneweek = date('Y-m-d H:i:s', strtotime('-1 week -1 day'));
-  $yesterday = date('Y-m-d H:i:s', strtotime('-1 day'));
+  $oneweek = date('Y-m-d H:i:s', strtotime('-6 day'));
+  $today = date('Y-m-d H:i:s', strtotime('tomorrow'));
   //var_dump($oneweek);
-  //var_dump($yesterday);
+  //var_dump($today);
   $colors = ['red','yellow','green','blue','purple'];
 
 	$q = "SELECT nick FROM users WHERE id_user=$uid";
@@ -79,7 +79,17 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $stats [$nick] = array('user_averages' => [], 'daily_stats' => []);
     $stats [$nick] ['user_averages'] = setUserAverages($uid, $dbc);
-    $stats [$nick] ['daily_stats'] = setDailyUserStats($uid, $oneweek, $yesterday, $dbc);
+    $stats [$nick] ['daily_stats'] = setDailyUserStats($uid, $oneweek, $today, $dbc);
+?>
+
+<div class="row">
+  <div class="jumbotron text-center col-10 offset-1">
+    <h1><?php echo $nick;?></h1> 
+    <p>Here are your statistics.</p>
+  </div>
+</div>
+
+<?php 
     for ($i = 1; $i<5; $i++){
       if (isset($_GET['uid'.$i]) && is_numeric($_GET['uid'.$i])) {
         $uid = intval($_GET['uid'.$i]);
@@ -91,7 +101,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
           $nick = $row['nick'];
           $stats [$nick] = array('user_averages' => [], 'daily_stats' => []);
           $stats [$nick] ['user_averages'] = setUserAverages($uid, $dbc);
-          $stats [$nick] ['daily_stats'] = setDailyUserStats($uid, $oneweek, $yesterday, $dbc);
+          $stats [$nick] ['daily_stats'] = setDailyUserStats($uid, $oneweek, $today, $dbc);
         }
       } else break;
     }
@@ -104,17 +114,42 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
       $all_averages [] = round(floatval($row['total average']) * 100, 2);
     }
 
-      $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$yesterday') GROUP BY Date ORDER BY date";
+      $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$today') GROUP BY Date ORDER BY date";
       $r = @mysqli_query ($dbc, $q);
-        while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-          $daily_total_all [] = $row['daily quizzes'];
-          $daily_avg_all [] = round(floatval($row['daily total average']) * 100, 2);
+      while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+        $daily_total_all [] = $row['daily quizzes'];
+        $daily_avg_all [] = round(floatval($row['daily total average']) * 100, 2);
+        $dates_all [] = $row['Date'];
+      }
+
+      if (count($daily_total_all) < 7) {
+        $day = -6;
+        for ($i=0; $i<7; $i++) {
+          $set = true;
+          for ($j=0;$j<count($dates_all); $j++) {
+            if ($dates_all[$j] == date('Y-m-d', strtotime($day.' day'))) $set = false;
+          }
+          if ($set) array_splice( $daily_total_all, $i, 0, 0 );
+          $day++;
         }
+      }
+
+      if (count( $daily_avg_all) < 7) {
+        $day = -6;
+        for ($i=0; $i<7; $i++) {
+          $set = true;
+          for ($j=0;$j<count($dates_all); $j++) {
+            if ($dates_all[$j] == date('Y-m-d', strtotime($day.' day'))) $set = false;
+          }
+          if ($set) array_splice( $daily_avg_all, $i, 0, 0 );
+          $day++;
+        }
+      }
     } else echo print_message('danger', 'No register in the last week.');
 
 ?>
 <script src="includes/utils.js"></script>
-<div class="row text-center"><h2>Total correct: </h2></div>
+<div class="row"><h2>Total correct: </h2></div>
 <div style="width:80%; margin-left: 10%;">
   <canvas id="canvas4"></canvas>
 </div>
@@ -132,7 +167,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 </div>
 <script>
 var last7days = [];
-for (var i=7; i>=1; i--) {
+for (var i=6; i>=0; i--) {
 	last7days.push(moment().subtract(i, 'days').format('dddd'));
 }
 
