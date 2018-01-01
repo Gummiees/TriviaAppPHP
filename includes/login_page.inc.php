@@ -2,18 +2,10 @@
 session_start();
 $page_title = 'Login';
 include ('includes/header.html');
+include('includes/print_messages.php');
 
-// Print any error messages, if they exist:
-if (isset($errors) && !empty($errors)) {
-	echo '<h1>Error!</h1>
-	<p class="error">The following error(s) occurred:<br />';
-	foreach ($errors as $msg) {
-		echo " - $msg<br />\n";
-	}
-	echo '</p><p>Please try again.</p>';
-}
+if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_message('danger', 'Error: '.$msg);
 if (!isset($_SESSION['id_user'])) {
-// Display the form:
 ?>
 
 <form class="form-signin" action="login.php" method="post">
@@ -26,8 +18,5 @@ if (!isset($_SESSION['id_user'])) {
 </form>
 
 <?php
-	} else {
-		include('includes/print_messages.php');
-		echo print_message('danger', 'You are already logged in.');
-	}
+	} else echo print_message('danger', 'You are already logged in.');
 include ('includes/footer.html'); ?>
