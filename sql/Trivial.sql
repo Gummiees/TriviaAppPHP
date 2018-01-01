@@ -18,7 +18,10 @@ CREATE TABLE quizzes
 	id_quiz MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	title VARCHAR(25) NOT NULL UNIQUE KEY,
 	description VARCHAR(250) NOT NULL,
-	theme VARCHAR(25) NOT NULL
+	theme VARCHAR(25) NOT NULL,
+	id_user MEDIUMINT(8) UNSIGNED NOT NULL,
+  date DATETIME NOT NULL DEFAULT NOW(),
+	CONSTRAINT FK_user FOREIGN KEY (id_user) REFERENCES users(id_user)
 );
 
 -- Create table Questions and Answers
@@ -60,13 +63,13 @@ INSERT INTO users (nick,pass,email) VALUES
 ("manolo",SHA1("manolo"),"manolo@manolo.com"),
 ("alba",SHA1("alba"),"alba@alba.com");
 -- Quizzes
-INSERT INTO quizzes (id_quiz, title, description, theme) VALUES
-(1, "Videogames quiz","This quiz has different questions about videogames of all types of genres. Are you ready for the challenge?","Videogames"),
-(2, "Memes quiz","This quiz has various questions about general memes. REEEEEEE","Memes"),
-(3, "Christmas quiz","Do you think you know enough of christmas to get all answers correct?","Cultural"),
-(4, "General movies quiz","A quiz about movies... I do not think you will even get 7 right.","Movies"),
-(5, "General knoledge quiz","Well, the title says it all.","Cultural"),
-(6, "General knoledge quiz 2","As the first one but better.","Cultural");
+INSERT INTO quizzes (id_quiz, title, description, theme, id_user) VALUES
+(1, "Videogames quiz","This quiz has different questions about videogames of all types of genres. Are you ready for the challenge?","Videogames", 1),
+(2, "Memes quiz","This quiz has various questions about general memes. REEEEEEE","Memes", 1),
+(3, "Christmas quiz","Do you think you know enough of christmas to get all answers correct?","Cultural", 1),
+(4, "General movies quiz","A quiz about movies... I do not think you will even get 7 right.","Movies", 1),
+(5, "General knoledge quiz","Well, the title says it all.","Cultural", 1),
+(6, "General knoledge quiz 2","As the first one but better.","Cultural", 1);
 -- Questions
 -- Videogames
 -- 1
