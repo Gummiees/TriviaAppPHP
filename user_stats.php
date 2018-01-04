@@ -8,11 +8,19 @@ function setUserAverages ($uid, $dbc) {
   $q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` WHERE id_user=$uid GROUP BY id_quiz";
   $r = @mysqli_query ($dbc, $q);
   $num = mysqli_num_rows($r);
+  $user_averages = array('total average' => [], 'total average user' => []);
   if ($num > 0) {
     while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-      $user_averages [] = round(floatval($row['total average']) * 100, 2);
+      $user_averages ['total average'][] = round(floatval($row['total average']) * 100, 2);
     }
   }
+  
+  $q = "SELECT id_user, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` WHERE id_user=$uid GROUP BY id_user";
+  $r = @mysqli_query ($dbc, $q);
+  while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+    $user_averages ['total average user'][] = round(floatval($row['total average']) * 100, 2);
+  }
+
   return $user_averages;
 }
 
@@ -81,47 +89,28 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     $stats [$nick] ['user_averages'] = setUserAverages($uid, $dbc);
     $stats [$nick] ['daily_stats'] = setDailyUserStats($uid, $oneweek, $today, $dbc);
     if (!isset($_GET['uid1'])) {
+      //pie
+      
+      $q = "SELECT id_user, COUNT(id_user) AS 'total' FROM `statistics`  WHERE id_user=$uid GROUP BY id_user";
+      $r = @mysqli_query ($dbc, $q);
+      while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+        $total_quizzes_user = $row['total'];
+      }
 ?>
 
 <div class="row">
   <div class="jumbotron text-center col-10 offset-1">
     <h1><?php echo $nick;?></h1> 
-    <p>Here are your statistics.</p>
+    <p>
+      You played <?php echo $total_quizzes_user; ?> quizzes. Here are your statistics.
+    </p>
   </div>
 </div>
-
-<div class="row"><h2>Total correct: </h2></div>
 <div class="container-canvas">
     <canvas id="canvas4"></canvas>
 
 <script>
 var alone = true;
-var config4 = {
-  type: 'pie',
-  data: {
-    datasets: [{
-      data: [
-        randomScalingFactor(),
-        randomScalingFactor()
-      ],
-      backgroundColor: [
-        window.chartColors.red,
-        window.chartColors.blue
-      ]
-    }],
-    labels: [
-      "Correct",
-      "Wrong"
-    ]
-  },
-  options: {
-    title: {
-        display: true,
-        text: 'General % of correct answers'
-    },
-    responsive: true
-  }
-};
 </script>
 
 <?php 
@@ -155,38 +144,38 @@ var config4 = {
       $all_averages [] = round(floatval($row['total average']) * 100, 2);
     }
 
-      $q = "SELECT COUNT(id_user)/$total_users AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$today') GROUP BY Date ORDER BY date";
-      $r = @mysqli_query ($dbc, $q);
-      while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
-        $daily_total_all [] = $row['daily quizzes'];
-        $daily_avg_all [] = round(floatval($row['daily total average']) * 100, 2);
-        $dates_all [] = $row['Date'];
-      }
+    $q = "SELECT COUNT(id_user)/$total_users AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$today') GROUP BY Date ORDER BY date";
+    $r = @mysqli_query ($dbc, $q);
+    while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+      $daily_total_all [] = $row['daily quizzes'];
+      $daily_avg_all [] = round(floatval($row['daily total average']) * 100, 2);
+      $dates_all [] = $row['Date'];
+    }
 
-      if (count($daily_total_all) < 7) {
-        $day = -6;
-        for ($i=0; $i<7; $i++) {
-          $set = true;
-          for ($j=0;$j<count($dates_all); $j++) {
-            if ($dates_all[$j] == date('Y-m-d', strtotime($day.' day'))) $set = false;
-          }
-          if ($set) array_splice( $daily_total_all, $i, 0, 0 );
-          $day++;
+    if (count($daily_total_all) < 7) {
+      $day = -6;
+      for ($i=0; $i<7; $i++) {
+        $set = true;
+        for ($j=0;$j<count($dates_all); $j++) {
+          if ($dates_all[$j] == date('Y-m-d', strtotime($day.' day'))) $set = false;
         }
+        if ($set) array_splice( $daily_total_all, $i, 0, 0 );
+        $day++;
       }
+    }
 
-      if (count( $daily_avg_all) < 7) {
-        $day = -6;
-        for ($i=0; $i<7; $i++) {
-          $set = true;
-          for ($j=0;$j<count($dates_all); $j++) {
-            if ($dates_all[$j] == date('Y-m-d', strtotime($day.' day'))) $set = false;
-          }
-          if ($set) array_splice( $daily_avg_all, $i, 0, 0 );
-          $day++;
+    if (count( $daily_avg_all) < 7) {
+      $day = -6;
+      for ($i=0; $i<7; $i++) {
+        $set = true;
+        for ($j=0;$j<count($dates_all); $j++) {
+          if ($dates_all[$j] == date('Y-m-d', strtotime($day.' day'))) $set = false;
         }
+        if ($set) array_splice( $daily_avg_all, $i, 0, 0 );
+        $day++;
       }
-    } else echo print_message('danger', 'No register in the last week.');
+    }
+  } else echo print_message('danger', 'No register in the last week.');
 
 ?>
   <canvas id="canvas1"></canvas>
@@ -221,7 +210,7 @@ var config1 = {
       borderColor: window.chartColors.<?php echo $colors[$i]; ?>,
       pointBackgroundColor: window.chartColors.<?php echo $colors[$i]; ?>,
       data: [<?php
-      foreach ($stats[$nick]['user_averages'] as $avg) {
+      foreach ($stats[$nick]['user_averages']['total average'] as $avg) {
           echo $avg;
         	if ($key != count($avg)) echo ',';
         }?>]
@@ -382,7 +371,34 @@ var config3 = {
     }
   }
 };    
-
+//pie
+var config4 = {
+  type: 'pie',
+  data: {
+    datasets: [{
+      data: [<?php
+          echo $stats[$nick]['user_averages']['total average user'][0].',';
+          $total = 100 - $stats[$nick]['user_averages']['total average user'][0];
+          echo $total;
+        ?>],
+      backgroundColor: [
+        window.chartColors.red,
+        window.chartColors.blue
+      ]
+    }],
+    labels: [
+      "Correct",
+      "Wrong"
+    ]
+  },
+  options: {
+    title: {
+        display: true,
+        text: 'General % of correct answers'
+    },
+    responsive: true
+  }
+};
 //radar
 var chartColors = window.chartColors;
 var color = Chart.helpers.color;
@@ -390,27 +406,37 @@ var config5 = {
   data: {
     datasets: [{
       data: [
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
-        randomScalingFactor(),
+<?php 
+  $i=0;
+  foreach ($stats as $nick => $value) {
+    foreach ($stats[$nick]['user_averages']['total average user'] as $avg) {
+      echo $avg;
+      if ($key != count($avg)) echo ',';
+    }
+  $i++;
+  }
+?>
       ],
       backgroundColor: [
-        color(chartColors.red).alpha(0.5).rgbString(),
-        color(chartColors.orange).alpha(0.5).rgbString(),
-        color(chartColors.yellow).alpha(0.5).rgbString(),
-        color(chartColors.green).alpha(0.5).rgbString(),
-        color(chartColors.blue).alpha(0.5).rgbString(),
-      ],
-      label: 'My dataset' // for legend
-    }],
+<?php 
+  $i=0;
+  foreach ($stats as $nick => $value) {
+    foreach ($stats[$nick]['user_averages']['total average user'] as $avg) {
+      ?>
+        color(chartColors.<?php echo $colors[$i]; ?>).alpha(0.5).rgbString()
+      <?php
+      if ($key != count($avg)) echo ',';
+    }
+  $i++;
+  }
+?>
+      ]
+     }],
+
     labels: [
-      "Red",
-      "Orange",
-      "Yellow",
-      "Green",
-      "Blue"
+    <?php $i=0; foreach ($stats as $nick => $value) {
+      echo '"'.$nick.'",';
+    }?>
     ]
   },
   options: {
@@ -421,7 +447,8 @@ var config5 = {
     },
     scale: {
       ticks: {
-        beginAtZero: true
+        beginAtZero: true,
+        max: 100
       },
       reverse: false
     },
