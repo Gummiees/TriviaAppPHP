@@ -3,12 +3,9 @@
   padding: 15px;
   margin: 0 auto;
 }
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
+
+.form-signin .form-signin-heading {
   margin-bottom: 10px;
-}
-.form-signin .checkbox {
-  font-weight: normal;
 }
 .form-signin .form-control {
   position: relative;
@@ -85,4 +82,16 @@ legend {
   -moz-transition: color 500ms ease-out;
   -o-transition: color 500ms ease-out;
   transition: color 500ms ease-out;
+}
+
+.container-canvas {
+  width: 80%;
+  margin-left: 10%;
+}
+
+@media screen and (min-width: 1180px) {
+    .container-canvas {
+        width: 50%;
+        margin-left: 25%;
+    }
 }
