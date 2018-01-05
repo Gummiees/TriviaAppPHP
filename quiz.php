@@ -97,7 +97,7 @@ if (isset($_SESSION['id_user'])) {
 </script>
 </div>
 <?php
-    } else echo print_message('danger', 'Quiz not found on our database.');
+    } else echo print_message('danger', 'Quiz not found in our database.');
     mysqli_free_result ($r);
   } else echo print_message('danger', 'No quiz selected.');
 } else echo print_message('danger', 'You are not logged in.');
