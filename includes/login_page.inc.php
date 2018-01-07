@@ -4,6 +4,10 @@ $page_title = 'Login';
 include ('includes/header.html');
 include('includes/print_messages.php');
 
+if (isset($_GET['signup']) && ($_GET['signup'] == 1)) {
+	echo print_message('success', 'Sign up correctly. Now you can login!');
+}
+
 if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_message('danger', 'Error: '.$msg);
 	if (!isset($_SESSION['id_user'])) {
 		?>
@@ -12,7 +16,7 @@ if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_mess
 			<div class="col-4 offset-4 form-nav">
 				<ul class="nav nav-tabs" role="tablist">
 					<li class="nav-item">
-						<a class="nav-link active" data-toggle="tab" href="#login">Login</a>
+						<a class="nav-link active" data-toggle="tab" href="#login">Sign in</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" data-toggle="tab" href="#signup">Sign Up</a>
@@ -24,7 +28,7 @@ if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_mess
 		<div class="tab-content">
 			<div class="container tab-pane active" id="login">
 				<form class="form-signin" action="login.php" method="post">
-					<h1 class="form-signin-heading text-center">Login <i class="fa fa-key fa-flip-horizontal" aria-hidden="true"></i></h1>
+					<h1 class="form-signin-heading text-center">Sign in <i class="fa fa-key fa-flip-horizontal" aria-hidden="true"></i></h1>
 					<div class="input-group">
 						<span class="input-group-addon input-group-addon-top"><i class="fa fa-envelope-o fa-fw"></i></span>
 						<input type="email" id="loginInputEmail" class="form-control" placeholder="Email address" name="email" required autofocus minlength="4" maxlength="60">
@@ -33,6 +37,7 @@ if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_mess
 						<span class="input-group-addon input-group-addon-bottom"><i class="fa fa-key fa-fw"></i></span>
 						<input type="password" id="loginInputPassword" class="form-control" placeholder="Password" name="pass" required minlength="4" maxlength="20">
 					</div>
+					<input type="hidden" name="type" value="login">
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 				</form>
 			</div>
@@ -55,6 +60,7 @@ if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_mess
 						<span class="input-group-addon input-group-addon-bottom"><i class="fa fa-key fa-fw"></i></span>
 						<input type="password" id="signupInputPassword2" class="form-control" placeholder="Repeat Password" name="pass2" required minlength="4" maxlength="20">
 					</div>
+					<input type="hidden" name="type" value="signup">
 					<button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
 				</form>
 			</div>
