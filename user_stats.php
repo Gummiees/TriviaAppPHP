@@ -98,12 +98,12 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
       }
 ?>
 
-<div class="row">
-  <div class="jumbotron text-center col-10 offset-1">
-    <h1><?php echo $nick;?></h1> 
-    <p>
-      You played <?php echo $total_quizzes_user; ?> quizzes. Here are your statistics.
-    </p>
+<div class="row text-center login-title">
+  <div class="col-sm-12 text-center">
+    <h1 style="font-size: 4em; text-align: center !important;"><?php echo $nick;?></h1> 
+    <h3>
+      You played <b><?php echo $total_quizzes_user; ?></b> quizzes. Here are your statistics.
+    </h3>
   </div>
 </div>
 <div class="container-canvas">
