@@ -14,7 +14,7 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-    <a class="navbar-brand" href="#">ATriviaT</a>
+    <a class="navbar-brand" href="index.php">ATriviaT</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -23,7 +23,10 @@
         <li class="nav-item" id="nav-index">
           <a class="nav-link" href="index.php">Home</a>
         </li>
-        <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item" id="nav-quiz"><a class="nav-link" href="register_quiz.php">Register Quiz</a></li>'; ?>
+        <li class="nav-item" id="nav-stats">
+          <a class="nav-link" href="stats.php">Statistics</a>
+        </li>
+        <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item" id="nav-quiz"><a class="nav-link" href="register_quiz.php">Register quiz</a></li>'; ?>
       </ul>
       
       <ul class="navbar-nav ml-auto">
@@ -39,11 +42,17 @@
 <script>
   var local = window.location.pathname;
   local = local.substring(local.lastIndexOf("/") + 1);
+    console.log(local);
   switch(local) {
     case 'index.php':
       document.getElementById('nav-index').className += ' active';
-    case 'quiz.php':
+      break;
+    case 'stats.php':
+      document.getElementById('nav-stats').className += ' active'; 
+      break;
+    case 'register_quiz.php':
       document.getElementById('nav-quiz').className += ' active'; 
+      break;
   }
 </script>
   <div id="content">

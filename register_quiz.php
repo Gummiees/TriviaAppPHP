@@ -117,15 +117,15 @@ if (isset($_SESSION['id_user'])) {
 ?>
 <div class="row text-center login-title">
   <div class="col-sm-12 text-center">
-    <h1 style="color: #8E44AD; font-size: 4em; text-align: center !important;">Register quiz</h1>
+    <h1 style=" font-size: 4em; text-align: center !important;">Register quiz</h1>
   </div>
 </div>
 <script>
   var i=0;
 </script>
-<div class="row">
+<div class="row" style="margin-top: 20px;">
   <div class="col-sm-2"></div>
-  <div class="col-sm-8">
+  <div class="col-sm-7">
     <form class="form-horizontal" action="register_quiz.php" method="post">
       <div class="form-group row">
         <label class="control-label col-sm-2 text-right" for="title">Title:</label>
