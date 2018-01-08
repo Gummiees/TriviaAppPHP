@@ -74,3 +74,32 @@ function check_login($dbc, $email = '', $pass = '') {
 	return array(false, $errors);
 
 } // End of check_login() function.
+
+function check_signup($dbc, $email = '', $nick = '', $pass1 = '', $pass2 = '') {
+
+	$errors = array();
+
+	if (empty($email)) $errors[] = 'You forgot to enter your email address.';
+	else $e = mysqli_real_escape_string($dbc, trim($email));
+
+	if (empty($nick)) $errors[] = 'You forgot to enter the nick.';
+	else $n = mysqli_real_escape_string($dbc, trim($nick));
+
+	if (empty($pass1)) $errors[] = 'You forgot to enter the password.';
+	else {
+		if ($pass1 != $pass2) $errors[] = 'Passwords do not match.';
+		else $p = mysqli_real_escape_string($dbc, trim($pass1));
+	}
+
+	if (empty($errors)) {
+		$q = "SELECT id_user FROM users WHERE email='$e' OR nick='$n'";
+		$r = @mysqli_query ($dbc, $q);
+		if (mysqli_num_rows($r) === 0) {
+			$q = "INSERT INTO users(email, nick, pass) VALUES ('$e', '$n', SHA1('$p'))";	
+			$r = @mysqli_query ($dbc, $q); 
+			$row = mysqli_fetch_array ($r, MYSQLI_ASSOC);
+			return array(true, null);
+		} else $errors[] = 'The email address or nick is already registered.';
+	}
+	return array(false, $errors);
+}
