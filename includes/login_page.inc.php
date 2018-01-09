@@ -1,27 +1,70 @@
-<?php # Script 12.1 - login_page.inc.php
-// This page prints any errors associated with logging in
-// and it creates the entire login page, including the form.
-
-// Include the header:
+<?php
+session_start();
 $page_title = 'Login';
 include ('includes/header.html');
+include('includes/print_messages.php');
 
-// Print any error messages, if they exist:
-if (isset($errors) && !empty($errors)) {
-	echo '<h1>Error!</h1>
-	<p class="error">The following error(s) occurred:<br />';
-	foreach ($errors as $msg) {
-		echo " - $msg<br />\n";
-	}
-	echo '</p><p>Please try again.</p>';
+if (isset($_GET['signup']) && ($_GET['signup'] == 1)) {
+	echo print_message('success', 'Sign up correctly. Now you can login!');
 }
 
-// Display the form:
-?><h1>Login</h1>
-<form action="login.php" method="post">
-	<p>Email Address: <input type="text" name="email" size="20" maxlength="60" /> </p>
-	<p>Password: <input type="password" name="pass" size="20" maxlength="20" /></p>
-	<p><input type="submit" name="submit" value="Login" /></p>
-</form>
+if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_message('danger', 'Error: '.$msg);
+	if (!isset($_SESSION['id_user'])) {
+		?>
 
-<?php include ('includes/footer.html'); ?>
+		<div class="row">
+			<div class="col-4 offset-4 form-nav">
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" data-toggle="tab" href="#login">Sign in</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#signup">Sign Up</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="tab-content">
+			<div class="container tab-pane active" id="login">
+				<form class="form-signin" action="login.php" method="post">
+					<h1 class="form-signin-heading text-center">Sign in <i class="fa fa-key fa-flip-horizontal" aria-hidden="true"></i></h1>
+					<div class="input-group">
+						<span class="input-group-addon input-group-addon-top"><i class="fa fa-envelope-o fa-fw"></i></span>
+						<input type="email" id="loginInputEmail" class="form-control" placeholder="Email address" name="email" required autofocus minlength="4" maxlength="60">
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon input-group-addon-bottom"><i class="fa fa-key fa-fw"></i></span>
+						<input type="password" id="loginInputPassword" class="form-control" placeholder="Password" name="pass" required minlength="4" maxlength="20">
+					</div>
+					<input type="hidden" name="type" value="login">
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+				</form>
+			</div>
+			<div class="container tab-pane fade" id="signup">
+				<form class="form-signup" action="login.php" method="post">
+					<h1 class="form-signup-heading text-center">Sign Up <i class="fa fa-pencil" aria-hidden="true"></i></h1>
+					<div class="input-group">
+						<span class="input-group-addon input-group-addon-top"><i class="fa fa-envelope-o fa-fw"></i></span>
+						<input type="email" id="signupInputEmail" class="form-control" placeholder="Email address" name="email" required autofocus minlength="4" maxlength="60">
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon input-group-addon-middle"><i class="fa fa-user fa-fw"></i></span>
+						<input type="text" id="signupInputNick" class="form-control" placeholder="Username" name="nick" required autofocus minlength="4" maxlength="20">
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon input-group-addon-middle"><i class="fa fa-key fa-fw"></i></span>
+						<input type="password" id="signupInputPassword1" class="form-control" placeholder="Password" name="pass1" required minlength="4" maxlength="20">
+					</div>
+					<div class="input-group">
+						<span class="input-group-addon input-group-addon-bottom"><i class="fa fa-key fa-fw"></i></span>
+						<input type="password" id="signupInputPassword2" class="form-control" placeholder="Repeat Password" name="pass2" required minlength="4" maxlength="20">
+					</div>
+					<input type="hidden" name="type" value="signup">
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+				</form>
+			</div>
+		</div>
+		<?php
+	} else echo print_message('danger', 'You are already logged in.');
+	include ('includes/footer.html'); ?>

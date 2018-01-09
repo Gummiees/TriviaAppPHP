@@ -1,65 +1,59 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Welcome to ATriviaT!</title>
+  <title>ATriviaT</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="includes/font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="includes/main.css">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
-    
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+  <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
 </head>
 <body>
-    
-    <!--navbar bootstrap -->
-    
-    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-        
-        <!-- logo-->
-        <a class="navbar-brand" href="#">ATriviaT
-            <!--IMAGEN LOGO <img src="bird.jpg" alt="Logo" style="width:40px;"> -->
-        </a>
-        
-        <!-- menu despleglable-->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <!-- el menu o menu que se desplega-->
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav">
-                <li class="nav-item" id="nav-index">
-                    <a class="nav-link" href="index.php">Home</a>
-                </li>
-                <li class="nav-item" id="nav-quiz">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-            </ul>
-            
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="login.php">Login</a>
-                </li>
-                <li class="navbar-item">
-                    <a class="nav-link" href="register.php">Register</a>
-                </li>
-            </ul>
-        </div>  
-    </nav>
+  <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <a class="navbar-brand" href="index.php">ATriviaT</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+      <ul class="navbar-nav">
+        <li class="nav-item" id="nav-index">
+          <a class="nav-link" href="index.php">Home</a>
+        </li>
+        <li class="nav-item" id="nav-stats">
+          <a class="nav-link" href="stats.php">Statistics</a>
+        </li>
+        <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item" id="nav-quiz"><a class="nav-link" href="register_quiz.php">Register quiz</a></li>'; ?>
+      </ul>
+      
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <?php if (isset($_SESSION["nick"])) echo '<a class="nav-link" href="user_stats.php?uid='.$_SESSION["id_user"].'">'.$_SESSION["nick"].'</a>';
+          else echo '<a class="nav-link" href="login.php">Sign in or Sign Up</a>'; ?>
+        </li>
+        <?php if (isset($_SESSION["nick"])) echo '<li class="navbar-item"><a class="nav-link" href="logout.php">Logout</a></li>';?>
+      </ul>
+    </div>  
+  </nav>
   
-  <script>
-    var local = window.location.pathname;
-    local = local.substring(local.lastIndexOf("/") + 1);
-    switch(local) {
-      case 'index.php':
-        document.getElementById('nav-index').className += ' active';
-      case 'quiz.php':
-        document.getElementById('nav-quiz').className += ' active'; 
-    }
-  </script>
-	<div id="content"><!-- Start of the page-specific content. -->
-<!-- Script 9.1 - header.html -->
+<script>
+  var local = window.location.pathname;
+  local = local.substring(local.lastIndexOf("/") + 1);
+    console.log(local);
+  switch(local) {
+    case 'index.php':
+      document.getElementById('nav-index').className += ' active';
+      break;
+    case 'stats.php':
+      document.getElementById('nav-stats').className += ' active'; 
+      break;
+    case 'register_quiz.php':
+      document.getElementById('nav-quiz').className += ' active'; 
+      break;
+  }
+</script>
+  <div id="content">

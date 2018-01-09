@@ -1,3 +1,57 @@
+.form-nav {
+  margin-top: 10px;
+}
+
+.form-signin,
+.form-signup {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-signin .form-signin-heading,
+.form-signup .form-signup-heading {
+  margin-bottom: 10px;
+}
+.form-signin .form-control,
+.form-signup .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus,
+.form-signup .form-control:focus {
+  z-index: 2;
+}
+
+.form-signup input[id="signupInputNick"],
+.form-signup input[id="signupInputPassword1"],
+.input-group-addon-middle {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.form-signin input[type="email"],
+.form-signup input[type="email"],
+.input-group-addon-top {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"],
+.form-signup input[id="signupInputPassword2"],
+.input-group-addon-bottom {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
 #footer {
 	text-align: center;
     bottom:0;
@@ -7,11 +61,53 @@
 	margin-left: 20px;
 }
 
-.jumbotron h1 {
-	font-size: 4em;
-}
-
-.jumbotron p {
+.respuestas {
 	font-size: 1.5em;
 }
 
+.respuesta-incorrecta {
+	color: red;
+}
+
+.respuesta-correcta {
+	color: #2acc2a;
+}
+
+legend {
+	font-size: 2em;
+}
+
+.custom-control-description {
+	font-size: 1.5em;
+}
+
+.custom-control-indicator {
+	vertical-align: middle;
+}
+
+.footer-icon {
+	color: #adadad;
+	font-size: 2em;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.footer-icon:hover {
+	color: #000;
+	-webkit-transition: color 500ms ease-out;
+  -moz-transition: color 500ms ease-out;
+  -o-transition: color 500ms ease-out;
+  transition: color 500ms ease-out;
+}
+
+.container-canvas {
+  width: 80%;
+  margin-left: 10%;
+}
+
+@media screen and (min-width: 1180px) {
+    .container-canvas {
+        width: 50%;
+        margin-left: 25%;
+    }
+}

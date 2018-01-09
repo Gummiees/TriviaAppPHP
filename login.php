@@ -1,4 +1,4 @@
-<?php # Script 12.8 - login.php #3
+<?php #login.php #3
 // This page processes the login form submission.
 // The script now uses sessions.
 
@@ -9,30 +9,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	require ('includes/login_functions.inc.php');
 	require ('mysqli_connect.php');
 		
-	// Check the login:
-	list ($check, $data) = check_login($dbc, $_POST['email'], $_POST['pass']);
-	
-	if ($check) { // OK!
-		
-		// Set the session data:
-		session_start();
-		$_SESSION['user_id'] = $data['user_id'];
-		$_SESSION['first_name'] = $data['first_name'];
-		
-		// Redirect:
-		redirect_user('loggedin.php');
-			
-	} else { // Unsuccessful!
-
-		// Assign $data to $errors for login_page.inc.php:
-		$errors = $data;
-
+	if ("login" == $_POST['type']) {
+		list ($check, $data) = check_login($dbc, $_POST['email'], $_POST['pass']);
+		if ($check) {
+			session_start();
+			$_SESSION['id_user'] = $data['id_user'];
+			$_SESSION['nick'] = $data['nick'];
+			redirect_user('index.php?log=1');	
+		} else $errors = $data;
+	} else if ("signup" == $_POST['type']){
+		list ($check, $errors) = check_signup($dbc, $_POST['email'], $_POST['nick'], $_POST['pass1'], $_POST['pass2']);
+		if ($check) redirect_user('login.php?signup=1');
 	}
-		
-	mysqli_close($dbc); // Close the database connection.
+	mysqli_close($dbc);
 
 } // End of the main submit conditional.
 
 // Create the page:
 include ('includes/login_page.inc.php');
+
 ?>
