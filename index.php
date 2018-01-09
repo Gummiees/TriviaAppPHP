@@ -1,4 +1,5 @@
 <?php 
+$page_title = 'Welcome to ATriviaT!';
 include ("includes/header.html");
 ?>
 
