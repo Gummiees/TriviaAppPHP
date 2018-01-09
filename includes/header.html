@@ -13,7 +13,7 @@
   <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
 </head>
 <body>
-  <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+  <nav class="navbar navbar-expand-md">
     <a class="navbar-brand" href="index.php">ATriviaT</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
@@ -34,7 +34,7 @@
           <?php if (isset($_SESSION["nick"])) echo '<a class="nav-link" href="user_stats.php?uid='.$_SESSION["id_user"].'">'.$_SESSION["nick"].'</a>';
           else echo '<a class="nav-link" href="login.php">Sign in or Sign Up</a>'; ?>
         </li>
-        <?php if (isset($_SESSION["nick"])) echo '<li class="navbar-item"><a class="nav-link" href="logout.php">Logout</a></li>';?>
+        <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>';?>
       </ul>
     </div>  
   </nav>
@@ -42,7 +42,6 @@
 <script>
   var local = window.location.pathname;
   local = local.substring(local.lastIndexOf("/") + 1);
-    console.log(local);
   switch(local) {
     case 'index.php':
       document.getElementById('nav-index').className += ' active';
