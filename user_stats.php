@@ -100,9 +100,9 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 <div class="row text-center login-title">
   <div class="col-sm-12 text-center">
-    <h1 style="font-size: 4em; text-align: center !important;"><?php echo $nick;?></h1> 
+    <h1 class="title"><?php echo $nick;?></h1> 
     <h3>
-      You played <b><?php echo $total_quizzes_user; ?></b> quizzes. Here are your statistics.
+      You played <b><?php echo $total_quizzes_user; ?></b> quizzes <i class="fa fa-bar-chart" aria-hidden="true"></i>. Here are your statistics. 
     </h3>
   </div>
 </div>

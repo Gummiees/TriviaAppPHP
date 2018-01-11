@@ -1,6 +1,5 @@
 -- Create database
 CREATE DATABASE Trivial;
-
 -- Create table 
 USE Trivial;
 -- Create table Users

@@ -42,13 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <div class="row text-center login-title">
   <div class="col-sm-12 text-center">
-    <h1 style="font-size: 4em; text-align: center !important;">See and compare stats</h1>
+    <h1 class="title">See and compare stats</h1>
   </div>
 </div>
 <script>
   var i=0;
 </script>
-<div class="row" style="margin-top: 20px;">
+<div class="row margin-top">
   <div class="col-sm-2 offset-5">
     <form class="form-horizontal" action="stats.php" method="post">
       <div class="form-group row">

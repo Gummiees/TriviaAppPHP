@@ -14,10 +14,10 @@ if (isset($_SESSION['id_user'])) {
       $quiz_title = $row['title'];
       $quiz_desc = $row['description'];
 ?>
-<div class="row">
-  <div class="jumbotron text-center col-10 offset-1">
-    <h1><?php echo $quiz_title;?></h1> 
-    <p><?php echo $quiz_desc;?></p>
+<div class="row text-center login-title">
+  <div class="offset-2 col-sm-8 text-center">
+    <h1 class="title"><?php echo $quiz_title;?></h1>
+    <h4><?php echo $quiz_desc;?></h4>
   </div>
 </div>
 <hr>
