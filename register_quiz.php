@@ -117,13 +117,13 @@ if (isset($_SESSION['id_user'])) {
 ?>
 <div class="row text-center login-title">
   <div class="col-sm-12 text-center">
-    <h1 class="title" style="">Register quiz <span class="fa fa-pencil" aria-hidden="true"></span></h1>
+    <h1 style=" font-size: 4em; text-align: center !important;">Register quiz</h1>
   </div>
 </div>
 <script>
   var i=0;
 </script>
-<div class="row margin-top">
+<div class="row" style="margin-top: 20px;">
   <div class="col-sm-2"></div>
   <div class="col-sm-7">
     <form class="form-horizontal" action="register_quiz.php" method="post">

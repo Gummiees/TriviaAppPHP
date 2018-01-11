@@ -1,29 +1,31 @@
 <!-- Start of the page-specific content. -->
 <div class="row">
-    <div class="col-6" style="text-align:center;">
-        <center><h3>Deportes</h3></center><p>descripcion del quiz</p>
-        <img src="https://ugc.kn3.net/i/origin/http://1.bp.blogspot.com/-Q5lGY2zw8IM/T9PqdD8LXWI/AAAAAAAABeg/T4wUwCcZJd4/s1600/ADIDAS_adiPURE_G_4b5596a8999a4.png" width="500px">
-    </div>
-    <div class="col-6" style="text-align:center;">
-        <center><h3>Videojuegos</h3></center><p>descripcion del quiz</p>
-
-        <img src="https://www.casadelaudio.com/Image/0/400_400-751-SON-419_01.png" width="500px">
-    </div>
-    <div class="col-6" style="text-align:center;">
-        <center><h3>Ciencia</h3></center><p>descripcion del quiz</p>
-
-        <img src="https://userscontent2.emaze.com/images/01470df2-7295-45f1-80c3-21a9a128f3da/5c77cc77-6f0f-49ec-802a-3c5bd5896c06.png" width="500px" >
-    </div>
+    
+    
     <?php 
-    $q = "SELECT id_user, nick FROM users WHERE email='$e' AND pass=SHA1('$p')";		
+    require ('mysqli_connect.php');
+    $q = "SELECT id_quiz, title, description FROM quizzes";		
 		$r = @mysqli_query ($dbc, $q); // Run the query.
 		
 		// Check the result:
-		if (mysqli_num_rows($r) == 1) {
+		if (mysqli_num_rows($r) > 0) {
 
 			// Fetch the record:
-			$row = mysqli_fetch_array ($r, MYSQLI_ASSOC);
-	           echo $row['nick'];
+			while ($row = mysqli_fetch_array ($r, MYSQLI_ASSOC) ){
+	           
+            
 			// Return true and the record:
-			return array(true, $row);
+            $id_quiz= $row['id_quiz'];
+            $title=$row['title'];
+            $description=$row['description'];
+            
+			echo '<div class="col-6" style="text-align:center;">
+        <center><a href="quiz.php?qid='.$id_quiz.'"><h3>'.$title.'</h3></a></center><p>'.$description.'</p>
+
+        <img src="https://userscontent2.emaze.com/images/01470df2-7295-45f1-80c3-21a9a128f3da/5c77cc77-6f0f-49ec-802a-3c5bd5896c06.png" width="500px" >
+    </div>';
+        }
+        }
+    else echo "error";
+            ?>
 </div>
