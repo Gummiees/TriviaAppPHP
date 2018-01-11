@@ -1,27 +1,4 @@
-/* palette: #3a4c8c, #435eba, #849ced, #c6d3ff, #2c2f33, #23272a*/
-
-.navbar {
-  background-color: #2c2f33 !important;
-}
-
-.navbar > .navbar-collapse > .navbar-nav > .nav-item > a, .navbar > .navbar-brand {
-  transition: color 0.2s ease;
-  color: #849ced !important;
-}
-
-.navbar > .navbar-collapse > .navbar-nav > .nav-item > a {
-  font-weight: bold;
-}
-
-.navbar > .navbar-collapse > .navbar-nav > .nav-item > a:hover, .navbar > .navbar-collapse > .navbar-nav > .active > a, .navbar > .navbar-brand:hover {
-  color: #c6d3ff !important;
-  -webkit-transition: color 200ms ease-out;
-  -moz-transition: color 200ms ease-out;
-  -o-transition: color 200ms ease-out;
-  transition: color 200ms ease-out;
-}
-
-.margin-top {
+.form-nav {
   margin-top: 10px;
 }
 
@@ -77,6 +54,7 @@
 
 #footer {
 	text-align: center;
+    bottom:0;
 }
 
 .form-quiz {
@@ -92,7 +70,7 @@
 }
 
 .respuesta-correcta {
-	color: #c6d3ff;
+	color: #2acc2a;
 }
 
 legend {
@@ -108,38 +86,18 @@ legend {
 }
 
 .footer-icon {
-	color: #849ced;
+	color: #adadad;
 	font-size: 2em;
 	margin-left: 5px;
 	margin-right: 5px;
 }
 
 .footer-icon:hover {
-	color: #3a4c8c;
+	color: #000;
 	-webkit-transition: color 500ms ease-out;
   -moz-transition: color 500ms ease-out;
   -o-transition: color 500ms ease-out;
   transition: color 500ms ease-out;
-}
-
-.btn-primary {
-  background-color:#849ced;
-  border-color: #849ced;
-}
-
-.btn-primary:active, .btn-primary:hover {
-  background-color:#435eba !important;
-  border-color: #435eba !important;
-  -webkit-transition: color 300ms ease-in ease-out;
-  -moz-transition: color 300ms ease-in ease-out;
-  -o-transition: color 300ms ease-in ease-out;
-  transition: color 300ms ease-in ease-out;
-}
-
-.title {
-  font-size: 4em;
-  text-align: center !important;
-  color:#23272a;
 }
 
 .container-canvas {

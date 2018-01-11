@@ -60,7 +60,7 @@ function check_login($dbc, $email = '', $pass = '') {
 
 			// Fetch the record:
 			$row = mysqli_fetch_array ($r, MYSQLI_ASSOC);
-	
+	           echo $row['nick'];
 			// Return true and the record:
 			return array(true, $row);
 			

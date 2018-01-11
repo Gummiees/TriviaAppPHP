@@ -12,7 +12,7 @@ if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_mess
 	if (!isset($_SESSION['id_user'])) {
 		?>
 
-		<div class="row margin-top">
+		<div class="row">
 			<div class="col-4 offset-4 form-nav">
 				<ul class="nav nav-tabs" role="tablist">
 					<li class="nav-item">
@@ -28,8 +28,8 @@ if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_mess
 		<div class="tab-content">
 			<div class="container tab-pane active" id="login">
 				<form class="form-signin" action="login.php" method="post">
-					<h1 class="form-signin-heading text-center title">Sign in <i class="fa fa-key fa-flip-horizontal" aria-hidden="true"></i></h1>
-					<div class="input-group margin-top">
+					<h1 class="form-signin-heading text-center">Sign in <i class="fa fa-key fa-flip-horizontal" aria-hidden="true"></i></h1>
+					<div class="input-group">
 						<span class="input-group-addon input-group-addon-top"><i class="fa fa-envelope-o fa-fw"></i></span>
 						<input type="email" id="loginInputEmail" class="form-control" placeholder="Email address" name="email" required autofocus minlength="4" maxlength="60">
 					</div>
@@ -43,8 +43,8 @@ if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_mess
 			</div>
 			<div class="container tab-pane fade" id="signup">
 				<form class="form-signup" action="login.php" method="post">
-					<h1 class="form-signup-heading text-center title">Sign up <i class="fa fa-pencil" aria-hidden="true"></i></h1>
-					<div class="input-group margin-top">
+					<h1 class="form-signup-heading text-center">Sign Up <i class="fa fa-pencil" aria-hidden="true"></i></h1>
+					<div class="input-group">
 						<span class="input-group-addon input-group-addon-top"><i class="fa fa-envelope-o fa-fw"></i></span>
 						<input type="email" id="signupInputEmail" class="form-control" placeholder="Email address" name="email" required autofocus minlength="4" maxlength="60">
 					</div>
