@@ -35,7 +35,7 @@
           <?php if (isset($_SESSION["nick"])) echo '<a class="nav-link" href="user_stats.php?uid='.$_SESSION["id_user"].'">'.$_SESSION["nick"].'</a>';
           else echo '<a class="nav-link" href="login.php">Sign in or Sign Up</a>'; ?>
         </li>
-        <?php if (isset($_SESSION["nick"])) echo '<li class="navbar-item"><a class="nav-link" href="logout.php">Logout</a></li>';?>
+        <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>';?>
       </ul>
     </div>  
   </nav>
