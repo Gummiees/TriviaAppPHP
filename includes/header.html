@@ -28,7 +28,16 @@
         </li>
         <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item" id="nav-quiz"><a class="nav-link" href="register_quiz.php">Register quiz</a></li>'; ?>
       </ul>
-      
+
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <form method="POST" action="search.php"> 
+          <input type="text" name="sea">
+          <input type="submit" value="Search" name="search"> 
+          </form>
+        </li>
+      </ul>
+
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <?php if (isset($_SESSION["nick"])) echo '<a class="nav-link" href="user_stats.php?uid='.$_SESSION["id_user"].'">'.$_SESSION["nick"].'</a>';
