@@ -9,7 +9,8 @@
             $id_quiz= $row['id_quiz'];
             $title=$row['title'];
             $description=$row['description'];
-            if ($i%2==0 || $i==0) echo '<div class="row '.$i.' '.($i%2).'">'; 
+            $image=$row['image'];
+            if ($i%2==0 || $i==0) echo '<div class="row">'; 
             echo '<div class="col-6" style="text-align:center;">
                 <center><a href="quiz.php?qid='.$id_quiz.'"><h3>'.$title.'</h3></a></center>
                 <p>'.$description.'</p>
