@@ -2,7 +2,7 @@
 CREATE DATABASE Trivial;
 
 -- Create table 
-
+USE Trivial;
 -- Create table Users
 CREATE TABLE users
 (
@@ -21,7 +21,8 @@ CREATE TABLE quizzes
 	theme VARCHAR(25) NOT NULL,
 	id_user MEDIUMINT(8) UNSIGNED NOT NULL,
   date DATETIME NOT NULL DEFAULT NOW(),
-	CONSTRAINT FK_user FOREIGN KEY (id_user) REFERENCES users(id_user)
+	CONSTRAINT FK_user FOREIGN KEY (id_user) REFERENCES users(id_user),
+    image VARCHAR(250) NOT NULL
 );
 
 -- Create table Questions and Answers
@@ -63,13 +64,13 @@ INSERT INTO users (nick,pass,email) VALUES
 ("manolo",SHA1("manolo"),"manolo@manolo.com"),
 ("alba",SHA1("alba"),"alba@alba.com");
 -- Quizzes
-INSERT INTO quizzes (id_quiz, title, description, theme, id_user) VALUES
-(1, "Videogames quiz","This quiz has different questions about videogames of all types of genres. Are you ready for the challenge?","Videogames", 1),
-(2, "Memes quiz","This quiz has various questions about general memes. REEEEEEE","Memes", 1),
-(3, "Christmas quiz","Do you think you know enough of christmas to get all answers correct?","Cultural", 1),
-(4, "General movies quiz","A quiz about movies... I do not think you will even get 7 right.","Movies", 1),
-(5, "General knoledge quiz","Well, the title says it all.","Cultural", 1),
-(6, "General knoledge quiz 2","As the first one but better.","Cultural", 1);
+INSERT INTO quizzes (id_quiz, title, description, theme, id_user, image) VALUES
+(1, "Videogames quiz","This quiz has different questions about videogames of all types of genres. Are you ready for the challenge?","Videogames", 1,"https://i.ytimg.com/vi/2XjoJVqh6bQ/maxresdefault.jpg"),
+(2, "Memes quiz","This quiz has various questions about general memes. REEEEEEE","Memes", 1,"https://www.quiz.biz/uploads/quizz/1058413/orig/1.jpg?1488916146"),
+(3, "Christmas quiz","Do you think you know enough of christmas to get all answers correct?","Cultural", 1,"http://duckword.com/wp-content/uploads/2017/12/christmas-quizzes-freechristmas-printable-bible-quiz-questions-for-adultschristmas-and-answers-uk-biblical.png"),
+(4, "General movies quiz","A quiz about movies... I do not think you will even get 7 right.","Movies", 1,"https://buzzkenya.com/wp-content/uploads/2014/06/Movie-Trivia-Questions-and-Answers.jpg"),
+(5, "General knoledge quiz","Well, the title says it all.","Cultural", 1,"https://1.bp.blogspot.com/-oqbNhGgZaWs/WFS6DfYSTJI/AAAAAAAAAlY/qI-HMAkdbEk8P_YbiFj96Y2Eyi-1Qq8BwCLcB/s1600/gk-scholarship-quiz.jpg"),
+(6, "General knoledge quiz 2","As the first one but better.","Cultural", 1,"https://lh3.googleusercontent.com/-HfbcUvTby6w/WlehbUCscWI/AAAAAAAAAhk/xyIQyWBL2wssF_tw-dyXcLpw4ubJnXMQACJoC/w530-h530-n-rw/general-knowledge-quiz-2.jpg");
 -- Questions
 -- Videogames
 -- 1
