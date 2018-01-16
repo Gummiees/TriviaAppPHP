@@ -39,6 +39,18 @@ if (isset($_SESSION['id_user'])) {
         $theme = mysqli_real_escape_string($dbc, trim($_POST['theme']));
       }
     }
+    if (!isset($_POST['image']) || empty($_POST['image'])) {
+      $errors[] = 'You forgot to enter the quiz image.';
+    } else {
+      $pattern = "/(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/";
+      if (preg_match ($pattern, trim($_POST['image']))) {
+        if (strlen($_POST['image']) > 250) {
+          $errors[] = 'The image is too long.';
+        } else {
+          $image = mysqli_real_escape_string($dbc, trim($_POST['image']));
+        }
+      } else $errors[] = 'The link is not an image.';
+    }
 
     //questions and answers
 
@@ -57,7 +69,7 @@ if (isset($_SESSION['id_user'])) {
     }
 
     if (empty($errors)) {
-      $q = "INSERT INTO quizzes (title, description, theme, id_user) VALUES ('$title', '$desc', '$theme', $uid)";   
+      $q = "INSERT INTO quizzes (title, description, theme, image, id_user) VALUES ('$title', '$desc', '$theme', '$image', $uid)";   
       $r = @mysqli_query ($dbc, $q);
       if ($r) {
         $q = "SELECT id_quiz FROM quizzes ORDER BY id_quiz DESC LIMIT 1";   
@@ -146,6 +158,13 @@ if (isset($_SESSION['id_user'])) {
         <div class="col-sm-10"> 
           <input type="text" class="form-control" name="theme" minlength="5" maxlength="25" required id="theme" placeholder="Quiz theme" value="<?php if (isset($_POST['theme'])) echo $_POST['theme']; ?>">
           <small class="form-text text-muted">Required. This will be the theme for the quiz. It must be between 5 and 25 characters.</small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="control-label col-sm-2 text-right" for="image">Image:</label>
+        <div class="col-sm-10"> 
+          <input type="url" class="form-control" name="image" maxlength="250" required id="image" placeholder="Quiz url image" value="<?php if (isset($_POST['image'])) echo $_POST['image']; ?>">
+          <small class="form-text text-muted">Required. This will be the image for the quiz. It must be an url with less than 250 characters.</small>
         </div>
       </div>
       <div id="add-quiz"></div>
