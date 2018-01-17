@@ -1,4 +1,7 @@
 <?php
+/*
+This page is used to look for stats from different users, even more than one user at the same time, so you can compare them.
+*/
 session_start();
 include("includes/header.html");
 include('includes/print_messages.php');
@@ -28,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $uids [] = $row['id_user'];
     }
   }
-
+  // If all of them exists, it redirects the user to user_stats.php with all the users like GET params.
   if (!isset($error)) {
     $link = "user_stats.php?";
     foreach ($uids as $key => $uid) {
@@ -36,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       else $link .= "&uid$key=$uid";
     }
     redirect_user($link);
-  } else echo print_message('danger', "Error: $error");
+  } else echo print_message('danger', "Error: $error"); // If some user does not exist, it prints the error.
 }
 
 ?>
@@ -75,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </div>  
 
 <script>
+  // This is used to add all the users you would like to compare. That way it's not static and because it depends on what the user wants to do, if it must be reactive, it must be done with JS.
   function addUsers() {
   document.getElementById("add-users").innerHTML += '<div class="form-group row"><div class="col-sm-12"><input type="text" class="form-control" name="nick'+i+'" id="nick'+i+'" maxlength="20" placeholder="Username '+(i+2)+'"></div></div>';
   i++;

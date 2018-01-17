@@ -313,7 +313,7 @@ INSERT INTO answers(description, value, id_question) VALUES
 ("The Pliva Falls",0,58);
 
 INSERT INTO statistics (id_user, id_quiz, average, date) VALUES
--- Quiz 1
+-- Inserts random user, random quizz, random avg and radom date between the existing ones or 7 days before from now.
 (ROUND(((6 - 2) * RAND() + 2), 0), ROUND(((6 - 1) * RAND() + 1), 0), ROUND(RAND(), 4), CONVERT(CURRENT_DATE - ROUND((6 * RAND()), 0), DATETIME)),
 (ROUND(((6 - 2) * RAND() + 2), 0), ROUND(((6 - 1) * RAND() + 1), 0), ROUND(RAND(), 4), CONVERT(CURRENT_DATE - ROUND((6 * RAND()), 0), DATETIME)),
 (ROUND(((6 - 2) * RAND() + 2), 0), ROUND(((6 - 1) * RAND() + 1), 0), ROUND(RAND(), 4), CONVERT(CURRENT_DATE - ROUND((6 * RAND()), 0), DATETIME)),

@@ -1,8 +1,20 @@
 <script src="includes/utils.js"></script>
 <?php
+/*
+This page is used to show all the stats the user wants to see. It uses GET params to know what users he wants to look and make the stats based on them. The stats shown are different if the user just want to see the stats for one user or for multiple.
+
+Functions are declared at the start.
+
+This page is the less descripted because it was done with not a lot of time and the intention of it was not to make the code clear, but see how far the page could be taken. If we wanted to make it clear, the page would have been constructed by other ways, like all the other pages. Therefore, this page is not designed to be the code example of the application, because of its complexity and extended code.
+*/
 session_start();
 include("includes/header.html");
 include('includes/print_messages.php');
+
+/*
+  Sets the averages for the user chosen in the parameters.
+  Returns an array of arrays with those averages.
+*/
 function setUserAverages ($uid, $dbc) {
 
   $q = "SELECT id_quiz, SUM(average)/COUNT(id_user) AS 'total average' FROM `statistics` WHERE id_user=$uid GROUP BY id_quiz";
@@ -24,6 +36,10 @@ function setUserAverages ($uid, $dbc) {
   return $user_averages;
 }
 
+/*
+  Sets the daily averages for the user chosen in the parameters in the range of days also specified in the parameters.
+  Returns an array of arrays with those averages.
+*/
 function setDailyUserStats ($uid, $oneweek, $today, $dbc) {
   $daily_stats_user = array('daily_total_user' => [], 'daily_avg_user' => [], 'dates' => []);
   $q = "SELECT COUNT(id_user) AS 'daily quizzes', SUM(average)/COUNT(id_user) AS 'daily total average', Convert(date, date) AS 'Date' FROM statistics WHERE (date BETWEEN '$oneweek' AND '$today') AND id_user=$uid GROUP BY Date ORDER BY date";
@@ -62,9 +78,12 @@ function setDailyUserStats ($uid, $oneweek, $today, $dbc) {
   return $daily_stats_user;
 }
 
+
+// If there is some params it will process them
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 	require ('mysqli_connect.php');
 	$uid = intval($_GET['uid']);
+  // Needed to get the stats from the last 7 days, including today.
   $oneweek = date('Y-m-d H:i:s',strtotime('-6 day', strtotime(date('Y-m-d')." 00:00:00")));
   $today = date('Y-m-d H:i:s', strtotime('tomorrow'));
   //var_dump($oneweek);
@@ -74,7 +93,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 	$q = "SELECT nick FROM users WHERE id_user=$uid";
 	$r = @mysqli_query ($dbc, $q);
 
-	if (mysqli_num_rows($r) == 1) {
+	if (mysqli_num_rows($r) == 1) { // If the user exists.
 
 		$row = mysqli_fetch_array($r, MYSQLI_ASSOC);
     $nick = $row['nick'];
@@ -82,14 +101,16 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     $q = "SELECT title FROM quizzes";
     $r = @mysqli_query ($dbc, $q);
     while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
+      // saves all the quizz titles
       $quiz_titles [] = $row['title'];
     }
-
+    // $stats is an array of arrays of arrays.
     $stats [$nick] = array('user_averages' => [], 'daily_stats' => []);
     $stats [$nick] ['user_averages'] = setUserAverages($uid, $dbc);
     $stats [$nick] ['daily_stats'] = setDailyUserStats($uid, $oneweek, $today, $dbc);
+
+    // If there is only one user to process, the pie chart and the title will show, otherwise it won't.
     if (!isset($_GET['uid1'])) {
-      //pie
       
       $q = "SELECT id_user, COUNT(id_user) AS 'total' FROM `statistics`  WHERE id_user=$uid GROUP BY id_user";
       $r = @mysqli_query ($dbc, $q);
@@ -113,7 +134,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 var alone = true;
 </script>
 
-<?php 
+<?php
+// case where there are more than one user to process. 
     } else echo "<script>var alone=false;</script><div class='container-canvas'><div class='canvas'><canvas id='canvas5'></canvas></div>";
     for ($i = 1; $i<5; $i++){
       if (isset($_GET['uid'.$i]) && is_numeric($_GET['uid'.$i])) {
@@ -191,6 +213,8 @@ for (var i=6; i>=0; i--) {
 var randomScalingFactor = function() {
   return Math.round(Math.random() * 100);
 };
+
+// From here the code is combining PHP with JS, as the JS needs the data obtained from the selects done before in PHP.
 
 var color = Chart.helpers.color;
 var config1 = {
