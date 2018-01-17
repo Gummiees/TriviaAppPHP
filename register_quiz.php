@@ -1,13 +1,19 @@
 <?php
+/*
+This page is used to register the quizz.
+*/
 session_start();
 include('includes/print_messages.php');
 require ('mysqli_connect.php');
 include ('includes/header.html');
-
+// Only if you are logged in you can register quizzes.
 if (isset($_SESSION['id_user'])) {
   $uid = $_SESSION['id_user'];
+  // the same page processes the registration quizz petition.
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = array();
+
+    // Validates that all the inputs are correct.
     if (!isset($_POST['title']) || empty($_POST['title'])) {
       $errors[] = 'You forgot to enter the quiz title.';
     } else {
@@ -52,7 +58,7 @@ if (isset($_SESSION['id_user'])) {
       } else $errors[] = 'The link is not an image.';
     }
 
-    //questions and answers
+    // Validation for questions and answers
 
     for ($i=1; $i<=10; $i++) {
       if (!isset($_POST['question'.$i]) || empty($_POST['question'.$i])) {
@@ -68,14 +74,18 @@ if (isset($_SESSION['id_user'])) {
       } else $radios[$i] = mysqli_real_escape_string($dbc, trim($_POST['radio'.$i]));
     }
 
+    // if there is no error, the quizz can be inserted
     if (empty($errors)) {
+      // first the quizz itself, with no questions and answers is inserted.
       $q = "INSERT INTO quizzes (title, description, theme, image, id_user) VALUES ('$title', '$desc', '$theme', '$image', $uid)";   
       $r = @mysqli_query ($dbc, $q);
       if ($r) {
+        // then a select is done to know what is the last quizz in the database. This one is the one it was just inserted, so it is the id of the quizz that must be used to relate the questions with it.
         $q = "SELECT id_quiz FROM quizzes ORDER BY id_quiz DESC LIMIT 1";   
         $r = @mysqli_query ($dbc, $q);
         $row = mysqli_fetch_array($r, MYSQLI_ASSOC);
         $qid = $row['id_quiz'];
+        // Now the questions are inserted.
         $q = "INSERT INTO questions (description, id_quiz) VALUES "; 
         for($i=1; $i<=10; $i++) {
           $desc = $questions[$i][0];
@@ -86,15 +96,17 @@ if (isset($_SESSION['id_user'])) {
 
         $r = @mysqli_query ($dbc, $q);
         if ($r) {
+          // Same as quizz with questions, we must know what are the last ids of the questions to relate the answers with them, so the last 10 inserted are selected in descendent order, because of that, the for is done inverse, from 10 to 0.
           $q = "SELECT id_question FROM questions ORDER BY id_question DESC LIMIT 10";   
           $r = @mysqli_query ($dbc, $q);
+          // create the query to insert
           $q = "INSERT INTO answers (description, value, id_question) VALUES "; 
           for($i=10; $i>=1 && $row = mysqli_fetch_array($r, MYSQLI_ASSOC); $i--) {
             $qid = $row['id_question'];
             $radio = $radios[$i];
             for ($j=1; $j<=3; $j++) {
               $desc = $questions[$i][$j];
-
+              // adds the question to the values to insert, that way only one insert is done with all the answers, instead of making one insert for each answer.
               if ($radio == $j) $q .= "('$desc', 1, $qid)";
               else $q .= "('$desc', 0, $qid)";
 
@@ -102,18 +114,19 @@ if (isset($_SESSION['id_user'])) {
             }
           }
           $q .= ';';
+          //execute the query
           $r = @mysqli_query ($dbc, $q);
-          if ($r) {
+          if ($r) { // All worked fine.
             echo print_message('success', 'Thank you. Your quiz is now ready to be played!');
-          } else {
+          } else { // Errors to insert.
             echo print_message('danger', 'Something went wrong due to our system. Sorry for the inconvenience.');
             echo '<p>' . mysqli_error($dbc) . '<br /><br />Query: ' . $q . '</p>';
           }
-        } else {
+        } else { // Errors to insert.
           echo print_message('danger', 'Something went wrong due to our system. Sorry for the inconvenience.');
           echo '<p>' . mysqli_error($dbc) . '<br /><br />Query: ' . $q . '</p>';
         }
-      } else {
+      } else { // Errors to insert.
         echo print_message('danger', 'Something went wrong due to our system. Sorry for the inconvenience.');
         echo '<p>' . mysqli_error($dbc) . '<br /><br />Query: ' . $q . '</p>';
       }
@@ -177,6 +190,7 @@ if (isset($_SESSION['id_user'])) {
   </div>
 </div>
 <script>
+  // This generates the inputs for questions and answers, this way not as much code is needed. Could also been done with PHP, but with JS is simpler and faster.
   window.onload = function () {
     for (var i=1; i<=10; i++) {
       document.getElementById("add-quiz").innerHTML += '<div class="form-group row"><label class="control-label col-sm-2 text-right" for="question'+i+'">Question '+i+'</label><div class="col-sm-10"> <input type="text" class="form-control" name="question'+i+'" id="question'+i+'" maxlength="250" placeholder="Question '+i+'"></div></div>';

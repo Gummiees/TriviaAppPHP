@@ -1,17 +1,18 @@
 <?php
 session_start();
-$page_title = 'Login';
 include ('includes/header.html');
 include('includes/print_messages.php');
 
+// If there is a parameter in the url named 'signup' and the value is 1, it means the user just signed up in the webpage, so it will show a dedicated message.
 if (isset($_GET['signup']) && ($_GET['signup'] == 1)) {
 	echo print_message('success', 'Sign up correctly. Now you can login!');
 }
-
+// If there was some errors it will print them here.
 if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_message('danger', 'Error: '.$msg);
-	if (!isset($_SESSION['id_user'])) {
-		?>
 
+// No matters if there was some errors, it will show the main page for sign in or sign up.
+if (!isset($_SESSION['id_user'])) {
+?>
 		<div class="row">
 			<div class="col-4 offset-4 form-nav">
 				<ul class="nav nav-tabs" role="tablist">
@@ -66,5 +67,5 @@ if (isset($errors) && !empty($errors)) foreach ($errors as $msg) echo print_mess
 			</div>
 		</div>
 		<?php
-	} else echo print_message('danger', 'You are already logged in.');
+	} else echo print_message('danger', 'You are already logged in.'); // if you are already logged in, it will only show an error, you will not be able to re-sign in or sign up.
 	include ('includes/footer.html'); ?>

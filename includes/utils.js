@@ -1,3 +1,7 @@
+/*
+This was downloaded and used for the charts.js, we didn't made this.
+*/
+
 'use strict';
 
 window.chartColors = {
