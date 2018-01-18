@@ -20,7 +20,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav nav-left">
         <li class="nav-item" id="nav-index">
           <a class="nav-link" href="index.php">Home</a>
         </li>
@@ -28,15 +28,15 @@
           <a class="nav-link" href="stats.php">Statistics</a>
         </li>
         <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item" id="nav-quiz"><a class="nav-link" href="register_quiz.php">Register quiz</a></li>'; ?>
-      </ul>
 
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <form method="POST" action="search.php"> 
-          <input type="text" name="sea">
-          <input type="submit" value="Search" name="search"> 
-          </form>
-        </li>
+        <form method="POST" action="search.php" class="navbar-form form-inline ml-auto" role="search"> 
+          <div class="input-group">
+            <input type="text" id="sea" class="form-control" placeholder="Search" name="sea" required autofocus>
+            <span class="input-group-btn">
+              <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+            </span>
+          </div>
+        </form>
       </ul>
 
       <ul class="navbar-nav ml-auto">

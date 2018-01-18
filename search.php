@@ -7,8 +7,8 @@
 	  $bus = trim($_POST['sea']);
 	  
 	  if (empty($bus)){
-		$text = 'Búsqueda sin resultados';
-	  	}else{
+		echo 'No Search Results';
+	  }else{
 		    require ('mysqli_connect.php');
 		    include ('includes/print_messages.php');
 		    $q = "SELECT id_quiz,title,description,image FROM quizzes WHERE title LIKE '%".$bus."%' ORDER BY id_quiz";        
@@ -30,9 +30,8 @@
 		            $i++;
 		        }
 		    echo '</div>';
-		    } else echo 'There is no quiz that contains this parameter '.$bus.' ...';
-		} 
-		mysqli_close($dbc);
-	  }
+		    } else echo print_message('danger', 'There is no quiz that contains "'.$bus.'"');
+		}
+	}
 	include("includes/footer.html");
 ?>
