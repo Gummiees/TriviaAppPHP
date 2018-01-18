@@ -1,30 +1,38 @@
-<?php
-include("includes/header.html");
-$text = '';
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+
+<?php 
+	include("includes/header.html");
+	if($_SERVER['REQUEST_METHOD'] === 'POST'){
 	
-  $bus = trim($_POST['sea']);
-  
-  if (empty($bus)){
-	$text = 'Búsqueda sin resultados';
-  }else{
-	require ("mysqli_connect.php");
-	//Contulta para la base de datos, se utiliza un comparador LIKE para acceder a todo lo que contenga la cadena a buscar
-	$sql = "SELECT title FROM quizzes WHERE title LIKE '%".$bus."%' ORDER BY id_quiz";
-	//Ejecución de la consulta
-	$resul= mysqli_query($dbc,$sql); 
-    //Si hay resultados...
-	if (mysqli_num_rows($resul) > 0){
-		while($fila = mysqli_fetch_assoc($resul)){ 
-            $text .= '<h2>'.$fila['title'] .'</h2><br/>';
-		}
+	  $bus = trim($_POST['sea']);
 	  
-	}else{
-		$text = "No existe nada con ".$bus."...";
-	}
-	mysqli_close($dbc);
-  }
-  echo $text;
-}
-include("includes/footer.html");
+	  if (empty($bus)){
+		$text = 'Búsqueda sin resultados';
+	  	}else{
+		    require ('mysqli_connect.php');
+		    include ('includes/print_messages.php');
+		    $q = "SELECT id_quiz,title,description,image FROM quizzes WHERE title LIKE '%".$bus."%' ORDER BY id_quiz";        
+		   	$r = @mysqli_query ($dbc, $q);
+		    if (mysqli_num_rows($r) > 0) {
+		        $i = 0;
+		        while ($row = mysqli_fetch_array ($r, MYSQLI_ASSOC)){
+		            $id_quiz= $row['id_quiz'];
+		            $title=$row['title'];
+		            $description=$row['description'];
+		            $image=$row['image'];
+		            if ($i%2==0 || $i==0) echo '<div class="row">'; 
+		            echo '<div class="col-6" style="text-align:center;">
+		                <center><a href="quiz.php?qid='.$id_quiz.'"><h3>'.$title.'</h3></a></center>
+		                <p>'.$description.'</p>
+		                <img src="'.$image.'" width="500px" />
+		            </div>';
+		            if ($i%2==1) echo '</div>'; 
+		            $i++;
+		        }
+		    echo '</div>';
+		    } else echo 'There is no quiz that contains this parameter '.$bus.' ...';
+		} 
+		mysqli_close($dbc);
+	  }
+	include("includes/footer.html");
 ?>
