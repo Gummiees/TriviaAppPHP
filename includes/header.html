@@ -1,12 +1,13 @@
 <html lang="en">
 <head>
-  <title>ATriviaT</title>
+  <title>ATriviaT!</title>
   <meta charset="utf-8">
+  <link href="/includes/logo.ico" type="image/x-icon" rel="shortcut icon">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="includes/font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="includes/main.css">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
@@ -15,7 +16,7 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-    <a class="navbar-brand" href="index.php">ATriviaT</a>
+    <a class="navbar-brand" href="index.php">ATriviaT!</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -42,14 +43,16 @@
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
           <?php if (isset($_SESSION["nick"])) echo '<a class="nav-link" href="user_stats.php?uid='.$_SESSION["id_user"].'">'.$_SESSION["nick"].'</a>';
-          else echo '<a class="nav-link" href="login.php">Sign in or Sign Up</a>'; ?>
+          else echo '<a class="nav-link" href="login.php">Sign in or Sign Up</a>'; // same as before, except that now it prints the nick.If no session is opened, it will print the button to sign in or sign up. ?>
         </li>
-        <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>';?>
+        <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>'; // The button to logout if the session is opened. ?>
       </ul>
     </div>  
   </nav>
   
 <script>
+
+  // This script is used to know in what page the used is so it will be remarked with the asigned css class.
   var local = window.location.pathname;
   local = local.substring(local.lastIndexOf("/") + 1);
     console.log(local);

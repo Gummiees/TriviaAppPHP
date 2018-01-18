@@ -1,24 +1,34 @@
-<?php 
+<?php
     require ('mysqli_connect.php');
     include ('includes/print_messages.php');
+    // pick all ids, titles, descriptions and images from the table quizzes.
     $q = "SELECT id_quiz, title, description, image FROM quizzes";        
-   $r = @mysqli_query ($dbc, $q);
+    $r = @mysqli_query ($dbc, $q);
+
     if (mysqli_num_rows($r) > 0) {
         $i = 0;
         while ($row = mysqli_fetch_array ($r, MYSQLI_ASSOC)){
+            // while there is a row to process, it prints it.
+            // take the data that sql returned and assign it to a variable.
             $id_quiz= $row['id_quiz'];
             $title=$row['title'];
             $description=$row['description'];
             $image=$row['image'];
+
+            // the variable $i it's used to put rows where there should be.
             if ($i%2==0 || $i==0) echo '<div class="row">'; 
+
+            // prints it.
             echo '<div class="col-6" style="text-align:center;">
                 <center><a href="quiz.php?qid='.$id_quiz.'"><h3>'.$title.'</h3></a></center>
                 <p>'.$description.'</p>
                 <img src="'.$image.'" width="500px" />
             </div>';
+
             if ($i%2==1) echo '</div>'; 
             $i++;
         }
     echo '</div>';
     } else echo print_message('danger', 'There was an error due to our database, sorry for the inconvenience.');
+    // if there is no results for the sql select, it must be an error in the database.
 ?>

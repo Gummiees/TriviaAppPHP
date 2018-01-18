@@ -2,19 +2,23 @@
 
 <?php 
 	include("includes/header.html");
+	// If the method is post execute this
 	if($_SERVER['REQUEST_METHOD'] === 'POST'){
-	
+	  // collect value
 	  $bus = trim($_POST['sea']);
-	  
+	  // If the field is not empty
 	  if (empty($bus)){
 		echo 'No Search Results';
 	  }else{
 		    require ('mysqli_connect.php');
 		    include ('includes/print_messages.php');
-		    $q = "SELECT id_quiz,title,description,image FROM quizzes WHERE title LIKE '%".$bus."%' ORDER BY id_quiz";        
+		    $q = "SELECT id_quiz,title,description,image FROM quizzes WHERE title LIKE '%".$bus."%' ORDER BY id_quiz";
+		    // Send a MySQL query       
 		   	$r = @mysqli_query ($dbc, $q);
+		   	// Get the number of rows in a result set
 		    if (mysqli_num_rows($r) > 0) {
 		        $i = 0;
+		        // Retrieve a row of results as an associative array
 		        while ($row = mysqli_fetch_array ($r, MYSQLI_ASSOC)){
 		            $id_quiz= $row['id_quiz'];
 		            $title=$row['title'];

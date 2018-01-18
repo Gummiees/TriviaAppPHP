@@ -1,4 +1,4 @@
-<?php # Script 12.2 - login_functions.inc.php
+<?php
 // This page defines two functions used by the login/logout process.
 
 /* This function determines an absolute URL and redirects the user there.
@@ -75,9 +75,19 @@ function check_login($dbc, $email = '', $pass = '') {
 
 } // End of check_login() function.
 
+
+/* This function validates the form data (email, nick, passwords).
+ * If they are present and the passwords match, the database is queried.
+ * The function requires a database connection.
+ * The function returns an array of information, including:
+ * - a TRUE/FALSE variable indicating success
+ * - an array of either errors or the database result
+ */
 function check_signup($dbc, $email = '', $nick = '', $pass1 = '', $pass2 = '') {
 
 	$errors = array();
+
+	//Validations
 
 	if (empty($email)) $errors[] = 'You forgot to enter your email address.';
 	else $e = mysqli_real_escape_string($dbc, trim($email));
@@ -87,19 +97,23 @@ function check_signup($dbc, $email = '', $nick = '', $pass1 = '', $pass2 = '') {
 
 	if (empty($pass1)) $errors[] = 'You forgot to enter the password.';
 	else {
+		// check if both passwords match, no need to check if pass2 is empty because if it was it would not enter the condition here.
 		if ($pass1 != $pass2) $errors[] = 'Passwords do not match.';
 		else $p = mysqli_real_escape_string($dbc, trim($pass1));
 	}
 
 	if (empty($errors)) {
+
+		// checks if there is no username with the same email or nickname
 		$q = "SELECT id_user FROM users WHERE email='$e' OR nick='$n'";
 		$r = @mysqli_query ($dbc, $q);
+		// if there is none it will make the insert of the new user in the table 'users'.
 		if (mysqli_num_rows($r) === 0) {
 			$q = "INSERT INTO users(email, nick, pass) VALUES ('$e', '$n', SHA1('$p'))";	
 			$r = @mysqli_query ($dbc, $q); 
 			$row = mysqli_fetch_array ($r, MYSQLI_ASSOC);
 			return array(true, null);
-		} else $errors[] = 'The email address or nick is already registered.';
+		} else $errors[] = 'The email address or nick is already registered.'; // if there is already some user with the same nickname or email it will throw an error.
 	}
 	return array(false, $errors);
 }
