@@ -19,6 +19,15 @@
   transition: color 200ms ease-out;
 }
 
+.navbar-form {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.navbar-form .input-group {
+  margin-right: 10px;
+}
+
 .margin-top {
   margin-top: 10px;
 }
