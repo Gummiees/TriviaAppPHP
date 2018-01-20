@@ -1,4 +1,4 @@
-w-- Create database
+-- Create database
 CREATE DATABASE Trivial;
 
 -- Create table 
