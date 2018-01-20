@@ -1,4 +1,4 @@
-w-- Create database
+-- Create database
 CREATE DATABASE Trivial;
 
 -- Create table 
@@ -53,12 +53,12 @@ CREATE TABLE statistics (
   CONSTRAINT fk_id_quiz FOREIGN KEY (id_quiz) REFERENCES quizzes(id_quiz)
 );
 
-CREATE TABLE IF NOT EXISTS messages (
-  id_massage MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  title varchar(100) NOT NULL,
-  name varchar(20) NOT NULL,
-  message varchar(250) NOT NULL
-) 
+CREATE TABLE messages (
+  id_massage MEDIUMINT(8) UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  name VARCHAR(20) NOT NULL,
+  message VARCHAR(250) NOT NULL
+);
 -- Inserts
 
 -- Users
