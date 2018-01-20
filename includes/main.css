@@ -161,4 +161,20 @@ footer {
     }
 }
 
+#messages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    
+}
+
+.h10 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    border:1px solid #ccc;
+    margin: 5px;
+    background-color:azure;
+}
+
 
