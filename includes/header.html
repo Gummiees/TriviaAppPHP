@@ -29,7 +29,9 @@
           <a class="nav-link" href="stats.php">Statistics</a>
         </li>
         <?php if (isset($_SESSION["nick"])) echo '<li class="nav-item" id="nav-quiz"><a class="nav-link" href="register_quiz.php">Register quiz</a></li>'; ?>
-
+        <li class="nav-item" id="nav-stats">
+          <a class="nav-link" href="new_user_manual.php">How does this work?</a>
+        </li>
         <form method="POST" action="search.php" class="navbar-form form-inline ml-auto" role="search"> 
           <div class="input-group">
             <input type="text" id="sea" class="form-control" placeholder="Search" name="sea" required autofocus>
