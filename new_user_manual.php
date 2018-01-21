@@ -32,6 +32,10 @@ include ("includes/header.html");
 	<img src="includes/img/captura10.png"><br>
 	<p>To check that it worked, you have to go to the home page or if you put in the search bar the name of the quiz or a portion of its name.</p>
 	<img src="includes/img/captura11.png"><br>
+	<p>You can also send us messages to improve the site with new ideas or bugs that you may have found. For that, check the footer of the site.</p>
+	<img src="includes/img/captura12.png"><br>
+	<p>Then fill the formulary and we will read your comments for sure!</p>
+	<img src="includes/img/captura13.png"><br>
 </div>
 <?php
 include ("includes/footer.html");

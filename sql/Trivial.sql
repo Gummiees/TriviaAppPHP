@@ -1,8 +1,8 @@
 -- Create database
-CREATE DATABASE Trivial;
+-- CREATE DATABASE Trivial;
 
 -- Create table 
-USE Trivial;
+-- USE Trivial;
 -- Create table Users
 CREATE TABLE users
 (
