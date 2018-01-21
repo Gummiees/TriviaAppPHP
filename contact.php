@@ -13,7 +13,7 @@ $name = mysqli_real_escape_string($dbc, trim($_POST['name']));
 $email = mysqli_real_escape_string($dbc, trim($_POST['email']));
 
 $message = mysqli_real_escape_string($dbc, trim($_POST['message']));
-$q="INSERT INTO messages (title, name, email, message) VALUES ('$title','$name','$email''$message')";
+$q="INSERT INTO messages (title, name, email, message) VALUES ('$title','$name','$email','$message')";
 $r = @mysqli_query ($dbc, $q);
     echo print_message("success","the message was successfully send");
     echo print_message("success","very soon your message will be answered");
